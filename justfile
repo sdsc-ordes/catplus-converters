@@ -11,7 +11,7 @@ default:
 
 # Build all crates
 build *args:
-    cargo build
+    cargo build {{args}}
 
 # Test all crates
 test *args:
@@ -34,6 +34,10 @@ run input_type input_file output_file *args:
         "{{input_type}}" \
         "{{root_dir}}/{{input_file}}" \
         "{{root_dir}}/{{output_file}}" {{args}}
+
+# Build the Nix package
+nix-build:
+    
 
 # Enter a nix interpreter with loaded flake.
 nix-repl:
