@@ -1,8 +1,6 @@
 use anyhow::{Context, Result};
 use catplus_common::models::{
-    agilent::LiquidChromatographyAggregateDocumentWrapper,
-    hci::CampaignWrapper,
-    synth::SynthBatch,
+    agilent::LiquidChromatographyAggregateDocumentWrapper, hci::CampaignWrapper, synth::SynthBatch,
 };
 use clap::Parser;
 use converter::convert::{json_to_rdf, RdfFormat};
@@ -10,7 +8,7 @@ use serde::Deserialize;
 use std::{
     fs::{self, File},
     io::{Read, Write},
-    path::{Path},
+    path::Path,
 };
 
 #[derive(Deserialize, Debug, clap::ValueEnum, Clone)]
@@ -64,34 +62,25 @@ fn process_file(
         .with_context(|| format!("Failed to read input file '{}'.", input_path.display()))?;
 
     let serialized_graph = match input_type {
-        InputType::Synth => {
-            json_to_rdf::<SynthBatch>(&input_content, format, materialize)
-        }
-        InputType::HCI => {
-            json_to_rdf::<CampaignWrapper>(&input_content, format, materialize)
-        }
+        InputType::Synth => json_to_rdf::<SynthBatch>(&input_content, format, materialize),
+        InputType::HCI => json_to_rdf::<CampaignWrapper>(&input_content, format, materialize),
         InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
             &input_content,
             format,
             materialize,
         ),
     }
-    .with_context(|| format!(
-        "Failed to convert '{}' to RDF format '{:?}'",
-        input_path.display(), format
-    ))?;
+    .with_context(|| {
+        format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)
+    })?;
 
     let mut output_file = File::create(output_path)
         .with_context(|| format!("Failed to create output file '{}'.", output_path.display()))?;
-    output_file.write_all(serialized_graph.as_bytes()).with_context(|| {
-        format!("Failed to write to output file '{}'.", output_path.display())
-    })?;
+    output_file
+        .write_all(serialized_graph.as_bytes())
+        .with_context(|| format!("Failed to write to output file '{}'.", output_path.display()))?;
 
-    println!(
-        "Processed '{}' -> '{}'",
-        input_path.display(),
-        output_path.display()
-    );
+    println!("Processed '{}' -> '{}'", input_path.display(), output_path.display());
 
     Ok(())
 }
@@ -106,18 +95,16 @@ fn main() -> Result<()> {
         anyhow::bail!("Input path '{}' is not a folder.", input_folder.display());
     }
 
-    fs::create_dir_all(output_folder)
-        .with_context(|| format!("Failed to create output folder '{}'.", output_folder.display()))?;
+    fs::create_dir_all(output_folder).with_context(|| {
+        format!("Failed to create output folder '{}'.", output_folder.display())
+    })?;
 
     for entry in fs::read_dir(input_folder)? {
         let entry = entry?;
         let path = entry.path();
 
         if path.is_file() {
-            let filename = path
-                .file_name()
-                .and_then(|f| f.to_str())
-                .unwrap_or("");
+            let filename = path.file_name().and_then(|f| f.to_str()).unwrap_or("");
 
             if filename.ends_with(".ttl") || filename.ends_with(".jsonld") {
                 println!("Skipping file '{}': already an RDF file.", filename);
