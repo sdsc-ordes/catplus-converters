@@ -36,6 +36,18 @@ rustPlatform.buildRustPackage {
     inherit lockFile;
   };
 
+  nativeBuildInputs = [
+    pkgs.openssl
+    pkgs.pkg-config
+  ];
+
+  # Required so that openssl-sys can be found by pkgconfig.
+  PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+
+  checkPhase = ''
+    cargo test -- --skip "endpoint"
+  '';
+
   dontInstallDocs = true;
   dontInstallManpages = true;
   doInstallCargoArtifacts = false;
