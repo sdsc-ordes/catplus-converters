@@ -26,7 +26,7 @@ pub struct SynthBatch {
     #[serde(rename = "batchID")]
     pub batch_id: String,
     #[serde(rename = "Actions")]
-    pub actions: Option<Vec<SynthAction>>,
+    pub actions: Vec<SynthAction>,
 }
 
 impl InsertIntoGraph for SynthBatch {
@@ -41,9 +41,40 @@ impl InsertIntoGraph for SynthBatch {
             )?;
         }
 
-        // NOTE: for actions, the direction is reversed (action hasbatch batch)
-        if let Some(actions) = &self.actions {
-            for action in actions {
+        // Loop through the actions and insert them into the Graph
+        for action in &self.actions {
+            if action.action_name == ActionName::AddAction {
+                if let Some(wells_vector) = &action.has_well {
+                    if !wells_vector.is_empty() {
+                        // for every well a new Action is inserted in order to seperate the Add Actions
+                        // by the products they contribute to
+                        for well in wells_vector {
+                            let new_action_iri = action.get_uri();
+                            graph.insert(&new_action_iri, cat::hasBatch.as_simple(), iri.clone())?;
+                            graph.insert(&new_action_iri, &rdf::type_.as_simple(), &action.action_name.iri().as_simple())?;
+                            graph.insert(&new_action_iri, &allores::AFX_0000622.as_simple(), &(action.start_time.as_str() * xsd::dateTime).as_simple())?;
+                            graph.insert(&new_action_iri, &allores::AFR_0002423.as_simple(), &(action.ending_time.as_str() * xsd::dateTime).as_simple())?;
+                            graph.insert(&new_action_iri, &allores::AFR_0001606.as_simple(), &action.method_name.as_simple())?;
+                            graph.insert(&new_action_iri, &allores::AFR_0001723.as_simple(), &action.equipment_name.as_simple())?;
+                            graph.insert(&new_action_iri, &cat::subEquipmentName.as_simple(), &action.sub_equipment_name.as_simple())?;
+                            action.has_sample.attach_into(graph, Link { source_iri: new_action_iri.clone(), pred: cat::hasSample.as_simple(), target_iri: None })?;
+                            if let Some(dispense_type) = &action.dispense_type {
+                                graph.insert(&new_action_iri, &cat::dispenseType.as_simple(), dispense_type.as_simple())?;
+                            }
+                            if let Some(dispense_state) = &action.dispense_state {
+                                graph.insert(&new_action_iri, &alloqual::AFQ_0000111.as_simple(), dispense_state.as_simple())?;
+                            }
+                            well.quantity.attach_into(graph, Link { source_iri: new_action_iri.clone(), pred: qudt::quantity.as_simple(), target_iri: None })?;
+                            well.attach_into(graph, Link { source_iri: new_action_iri.clone(), pred: cat::hasWell.as_simple(), target_iri: None })?;
+                            let product_id = format!("{}-{}", &well.has_plate.container_id, well.position);
+                            let new_product_iri = well.get_uri();
+                            graph.insert(&new_product_iri, &rdf::type_.as_simple(), &cat::Product.as_simple())?;
+                            graph.insert(&new_product_iri, &purl::identifier.as_simple(), product_id.as_simple())?;
+                            graph.insert(&new_action_iri, &cat::producesProduct.as_simple(), &new_product_iri)?;
+                        }
+                    }
+                }
+            } else {
                 let action_uri = action.get_uri();
                 graph.insert(&action_uri, cat::hasBatch.as_simple(), iri.clone())?;
                 action.insert_into(graph, action_uri)?;
@@ -67,15 +98,19 @@ pub struct SynthAction {
     #[serde(flatten)]
     pub has_plate: Option<Plate>,
     pub speed_shaker: Option<Observation>,
-    pub has_well: Option<Vec<SynthWell>>,
-    pub dispense_state: Option<String>,
-    pub dispense_type: Option<String>,
-    pub has_sample: Option<SynthSample>,
     pub speed_tumble_stirrer: Option<Observation>,
     pub temperature_tumble_stirrer: Option<Observation>,
     pub temperature_shaker: Option<Observation>,
     pub pressure_measurement: Option<Observation>,
     pub vacuum: Option<Observation>,
+
+    // These properties below are only on Synth Add Actions
+    // They are entered at the Batch insert as the Add Actions
+    // are multiplied by wells
+    pub has_well: Option<Vec<SynthWell>>,
+    pub dispense_state: Option<String>,
+    pub dispense_type: Option<String>,
+    pub has_sample: Option<SynthSample>,
 }
 
 impl InsertIntoGraph for SynthAction {
@@ -93,11 +128,7 @@ impl InsertIntoGraph for SynthAction {
             (cat::vacuum, &self.vacuum),
             (cat::temperatureShaker, &self.temperature_shaker),
             (alloproc::AFP_0002677, &self.pressure_measurement),
-            (cat::hasSample, &self.has_sample),
-            (cat::hasWell, &self.has_well),
             (cat::hasPlate, &self.has_plate),
-            (alloqual::AFQ_0000111, &self.dispense_state.as_ref().clone().map(|s| s.as_simple())),
-            (cat::dispenseType, &self.dispense_type.as_ref().clone().map(|s| s.as_simple())),
         ] {
             value.attach_into(
                 graph,
@@ -114,6 +145,7 @@ pub struct SynthWell {
     #[serde(flatten)]
     pub has_plate: Plate,
     pub position: String,
+    // Quantity is added at the action not at the well
     pub quantity: Observation,
 }
 
@@ -123,7 +155,6 @@ impl InsertIntoGraph for SynthWell {
             (rdf::type_, &cat::Well.as_simple() as &dyn InsertIntoGraph),
             (cat::hasPlate, &self.has_plate),
             (allores::AFR_0002240, &self.position.as_simple()),
-            (qudt::quantity, &self.quantity),
         ] {
             value.attach_into(
                 graph,
