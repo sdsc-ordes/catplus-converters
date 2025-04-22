@@ -1,9 +1,9 @@
 use catplus_common::models::{
     agilent::LiquidChromatographyAggregateDocumentWrapper, hci::CampaignWrapper, synth::SynthBatch,
 };
-use converter::convert::{json_to_rdf, RdfFormat};
-use converter::manage_input_output::{
-    define_output_folder, manage_input, manage_output, InputType,
+use converter::{
+    convert::{json_to_rdf, RdfFormat},
+    manage_input_output::{define_output_folder, manage_input, manage_output, InputType},
 };
 
 use anyhow::{Context, Result};
@@ -31,7 +31,6 @@ struct Args {
     #[arg(long, default_value_t = false)]
     materialize: bool,
 }
-
 
 fn process_file(
     input_path: &Path,
@@ -68,8 +67,6 @@ fn process_file(
     Ok(())
 }
 
-
-
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -101,4 +98,3 @@ fn main() -> Result<()> {
     println!("All files processed.");
     Ok(())
 }
-
