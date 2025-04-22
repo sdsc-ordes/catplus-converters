@@ -54,21 +54,40 @@ impl InsertIntoGraph for SynthBatch {
                             println!("{:?}", &action_uri);
                             graph.insert(&action_uri, cat::hasBatch.as_simple(), iri.clone())?;
                             for (pred, value) in [
-                                (rdf::type_, &action.action_name.iri().as_simple() as &dyn InsertIntoGraph),
-                                (allores::AFX_0000622, &(action.start_time.as_str() * xsd::dateTime).as_simple()),
-                                (allores::AFR_0002423, &(action.ending_time.as_str() * xsd::dateTime).as_simple()),
+                                (
+                                    rdf::type_,
+                                    &action.action_name.iri().as_simple() as &dyn InsertIntoGraph,
+                                ),
+                                (
+                                    allores::AFX_0000622,
+                                    &(action.start_time.as_str() * xsd::dateTime).as_simple(),
+                                ),
+                                (
+                                    allores::AFR_0002423,
+                                    &(action.ending_time.as_str() * xsd::dateTime).as_simple(),
+                                ),
                                 (allores::AFR_0001606, &action.method_name.as_simple()),
                                 (allores::AFR_0001723, &action.equipment_name.as_simple()),
                                 (cat::subEquipmentName, &action.sub_equipment_name.as_simple()),
-                                (alloqual::AFQ_0000111, &action.dispense_state.as_ref().clone().map(|s| s.as_simple())),
-                                (cat::dispenseType, &action.dispense_type.as_ref().clone().map(|s| s.as_simple())),
+                                (
+                                    alloqual::AFQ_0000111,
+                                    &action.dispense_state.as_ref().clone().map(|s| s.as_simple()),
+                                ),
+                                (
+                                    cat::dispenseType,
+                                    &action.dispense_type.as_ref().clone().map(|s| s.as_simple()),
+                                ),
                                 (cat::hasSample, &action.has_sample),
                                 (qudt::quantity, &well.quantity),
                                 (cat::hasWell, well),
                             ] {
                                 value.attach_into(
                                     graph,
-                                    Link { source_iri: action_uri.clone(), pred: pred.as_simple(), target_iri: None },
+                                    Link {
+                                        source_iri: action_uri.clone(),
+                                        pred: pred.as_simple(),
+                                        target_iri: None,
+                                    },
                                 )?;
                             }
                             let product_id =
