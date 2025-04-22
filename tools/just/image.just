@@ -5,22 +5,18 @@ root_dir := `git rev-parse --show-toplevel`
 # Default recipe to list all recipes.
 [private]
 default:
-  just --list docker --no-aliases
+  just --list image --no-aliases
 
-# Build the catplus-converters Nix package.
-build-nix-package *args:
-    @echo "Building package derivation"
-    nix build {{root_dir}}/tools/nix#catplus-converters \
-        --out-link {{root_dir}}/build/bin/catplus-converters
 
-# Build the catplus-converters-image Nix Docker image.
-build-nix-image *args: build-nix-package
+# Build the catplus-converters-image Nix OCI image.
+build *args:
     @echo "Building image derivation"
+    just nix build
     nix build {{root_dir}}/tools/nix#catplus-converters-image \
         --out-link {{root_dir}}/build/image/catplus-converters-image
 
 # Upload converters image.
-push-image: build-nix-image
+push: build
    @echo "🐋 Uploading docker image"
    skopeo copy \
     "docker-archive:{{root_dir}}/build/image/catplus-converters-image" \

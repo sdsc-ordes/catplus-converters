@@ -35,21 +35,8 @@ run input_type input_file output_file *args:
         "{{root_dir}}/{{input_file}}" \
         "{{root_dir}}/{{output_file}}" {{args}}
 
-# Build the Nix package
-nix-build:
-    
-
-# Enter a nix interpreter with loaded flake.
-nix-repl:
-    nix repl ./tools/nix
-
-alias dev := nix-develop
-# Enter a Nix development shell.
-nix-develop *args:
-    @echo "Starting nix developer shell in './tools/nix/flake.nix'."
-    cmd=("$@") && \
-    { [ -n "${cmd:-}" ] || cmd=("zsh"); } && \
-    nix develop ./tools/nix#default --accept-flake-config --command "${cmd[@]}"
+dev:
+  just nix::develop
 
 # Run the converter.
 convert *args:
@@ -79,5 +66,7 @@ shacl-start:
 shacl-stop:
   docker stop catplus-shacl-api &
 
-# Manage docker.
-mod docker './tools/just/docker.just'
+# Manage container image
+mod image './tools/just/image.just'
+# Nix operations
+mod nix './tools/just/nix.just'
