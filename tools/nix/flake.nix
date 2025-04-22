@@ -55,6 +55,7 @@
           };
 
           # Set the rust toolchain from the `rust-toolchain.toml`.
+          # https://github.com/oxalica/rust-overlay/issues/199
           rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../../rust-toolchain-release.toml;
 
           # Things needed only at compile-time.
