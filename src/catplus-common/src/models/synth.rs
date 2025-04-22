@@ -49,9 +49,7 @@ impl InsertIntoGraph for SynthBatch {
                         // for every well a new Action is inserted in order to separate the Add Actions
                         // by the products they contribute to
                         for well in wells_vector {
-                            println!("{:?}", well);
                             let action_uri = action.get_uri();
-                            println!("{:?}", &action_uri);
                             graph.insert(&action_uri, cat::hasBatch.as_simple(), iri.clone())?;
                             for (pred, value) in [
                                 (
