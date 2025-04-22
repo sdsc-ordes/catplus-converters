@@ -35,9 +35,8 @@ The rust code can be packaged and built into a docker image through Nix derivati
 Execute the following commands: 
 
 ```
-just --unstable docker build-nix-package
-just --unstable docker build-nix-image
-just --unstable docker push-image
+just docker build-nix-image
+just docker push-image
 ```
 
 ### Architecture
