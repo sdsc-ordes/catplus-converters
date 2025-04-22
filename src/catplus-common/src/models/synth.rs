@@ -51,6 +51,10 @@ impl InsertIntoGraph for SynthBatch {
                         for well in wells_vector {
                             let action_uri = action.get_uri();
                             graph.insert(&action_uri, cat::hasBatch.as_simple(), iri.clone())?;
+                            // Create the product_id from container_id and position
+                            let product_id =
+                                format!("{}-{}", &well.has_plate.container_id, well.position);
+                            let new_product_uri = well.get_uri();
                             for (pred, value) in [
                                 (
                                     rdf::type_,
@@ -78,6 +82,7 @@ impl InsertIntoGraph for SynthBatch {
                                 (cat::hasSample, &action.has_sample),
                                 (qudt::quantity, &well.quantity),
                                 (cat::hasWell, well),
+                                (cat::producesProduct, &new_product_uri),
                             ] {
                                 value.attach_into(
                                     graph,
@@ -88,24 +93,20 @@ impl InsertIntoGraph for SynthBatch {
                                     },
                                 )?;
                             }
-                            let product_id =
-                                format!("{}-{}", &well.has_plate.container_id, well.position);
-                            let new_product_uri = well.get_uri();
-                            graph.insert(
-                                &new_product_uri,
-                                &rdf::type_.as_simple(),
-                                &cat::Product.as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_product_uri,
-                                &purl::identifier.as_simple(),
-                                product_id.as_simple(),
-                            )?;
-                            graph.insert(
-                                &action_uri,
-                                &cat::producesProduct.as_simple(),
-                                &new_product_uri,
-                            )?;
+                            // Insert product that is derived from the product_id variable created above
+                            for (pred, value) in [
+                                (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),
+                                (purl::identifier, &product_id.as_simple()),
+                            ] {
+                                value.attach_into(
+                                    graph,
+                                    Link {
+                                        source_iri: new_product_uri.clone(),
+                                        pred: pred.as_simple(),
+                                        target_iri: None,
+                                    },
+                                )?;
+                            }
                         }
                     }
                 }
