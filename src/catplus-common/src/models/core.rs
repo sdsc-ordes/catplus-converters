@@ -226,6 +226,30 @@ impl InsertIntoGraph for Measurement {
     }
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Well {
+    #[serde(flatten)]
+    pub has_plate: Plate,
+    pub position: String,
+}
+
+impl InsertIntoGraph for Well {
+    fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
+        for (pred, value) in [
+            (rdf::type_, &cat::Well.as_simple() as &dyn InsertIntoGraph),
+            (cat::hasPlate, &self.has_plate),
+            (allores::AFR_0002240, &self.position.as_simple()),
+        ] {
+            value.attach_into(
+                graph,
+                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
+            )?;
+        }
+
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -249,30 +273,6 @@ mod tests {
         let i = IriRef::new_unchecked("http://test.com/my-observation");
         observation.insert_into(&mut b.graph, i.as_simple())?;
         println!("Graph\n{}", b.serialize_to_turtle().unwrap());
-
-        Ok(())
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Well {
-    #[serde(flatten)]
-    pub has_plate: Plate,
-    pub position: String,
-}
-
-impl InsertIntoGraph for Well {
-    fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
-        for (pred, value) in [
-            (rdf::type_, &cat::Well.as_simple() as &dyn InsertIntoGraph),
-            (cat::hasPlate, &self.has_plate),
-            (allores::AFR_0002240, &self.position.as_simple()),
-        ] {
-            value.attach_into(
-                graph,
-                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
-            )?;
-        }
 
         Ok(())
     }
