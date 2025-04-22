@@ -49,7 +49,7 @@ impl Unit {
     pub fn display_name(&self) -> &'static str {
         match self {
             Unit::Bar => "Bar",
-            Unit::DegC => "DEG-C",
+            Unit::DegC => "DEG_C",
             Unit::MilliGM => "MilliGM",
             Unit::GMPerMilliL => "GM-PER-MilliL",
             Unit::GMPerMol => "GM-PER-MOL",
@@ -57,6 +57,7 @@ impl Unit {
             Unit::RevPerMin => "REV-PER-MIN",
             Unit::MilliL => "MilliL",
             Unit::MilliM3 => "MilliM3",
+            Unit::MicroL => "MicroL",
             Unit::SEC => "SEC",
             Unit::MIN => "MIN",
             Unit::UNITLESS => "UNITLESS",
@@ -104,7 +105,7 @@ impl fmt::Display for Unit {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[allow(non_snake_case, non_camel_case_types)]
 pub enum ActionName {
     AddAction,
