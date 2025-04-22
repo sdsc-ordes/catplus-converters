@@ -1,7 +1,7 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{alloprop, alloqual, allores, cat},
+        namespaces::{alloprop, alloqual, allores, cat, purl},
     },
     models::{
         core::{Chemical, Observation, Plate, Well},
@@ -60,6 +60,7 @@ pub struct BravoAction {
     pub start_duration: Option<Observation>,
     pub ending_duration: Option<Observation>,
     pub order: Option<String>,
+    pub product_identification: ProductIdentification,
 }
 
 impl InsertIntoGraph for BravoAction {
@@ -76,24 +77,14 @@ impl InsertIntoGraph for BravoAction {
                 cat::subEquipmentName,
                 &self.sub_equipment_name.as_ref().clone().map(|s| s.as_simple()),
             ),
-            // TODO: serialize to xsd::boolean and not string
-            (
-                cat::isSpmeProcess,
-                &self
-                    .spme_process
-                    .as_ref()
-                    .clone()
-                    .as_ref()
-                    .map(|s| s.to_string())
-                    .as_ref()
-                    .map(|s| s.as_str().as_simple()),
-            ),
             (cat::speedInRPM, &self.speed_shaker),
             (cat::volumeEvaporationFinal, &self.volume_evaporation_final),
             (alloprop::AFX_0000060, &self.temperature),
             (cat::hasSample, &self.has_sample),
             (cat::hasSolvent, &self.has_solvent),
             (cat::hasWell, &self.at_well),
+            (cat::preparesProduct, &self.product_identification),
+            (allores::AFR_0001164, &self.product_identification.peak_identifier.as_simple()),
             (cat::hasCartridge, &self.has_cartridge),
             (cat::order, &self.order.as_ref().clone().map(|s| s.as_simple())),
             (alloqual::AFQ_0000111, &self.dispense_state.as_ref().clone().map(|s| s.as_simple())),
@@ -102,6 +93,15 @@ impl InsertIntoGraph for BravoAction {
             value.attach_into(
                 graph,
                 Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
+            )?;
+        }
+        if let Some(spme_process) = self.spme_process {
+            let lexical_value = spme_process.to_string();
+            let lexical_str = lexical_value.as_str();
+            let literal_term: SimpleTerm<'_> = lexical_str * xsd::boolean;
+            literal_term.attach_into(
+                graph,
+                Link { source_iri: iri.clone(), pred: cat::isSpmeProcess.as_simple(), target_iri: None },
             )?;
         }
 
@@ -162,7 +162,6 @@ pub struct BravoWell {
     #[serde(flatten)]
     pub has_plate: Plate,
     pub position: String,
-    pub product_identification: ProductIdentification,
 }
 
 impl InsertIntoGraph for BravoWell {
@@ -187,6 +186,7 @@ impl InsertIntoGraph for BravoWell {
 pub struct ProductIdentification {
     #[serde(rename = "sampleID")]
     pub sample_id: String,
+    // Peak identifier is added on the action, not on the product
     pub peak_identifier: String,
 }
 
@@ -194,6 +194,7 @@ impl InsertIntoGraph for ProductIdentification {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),
+            (purl::identifier, &self.sample_id.as_simple()),
         ] {
             value.attach_into(
                 graph,
