@@ -17,7 +17,7 @@
 
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
-    nixpkgsStable.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgsStable.url = "github:nixos/nixpkgs/nixos-24.11";
     # Also see the 'stable-packages' overlay at 'overlays/default.nix'.
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -33,6 +33,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       flake-utils,
       rust-overlay,
@@ -45,6 +46,8 @@
         let
           overlays = [ (import rust-overlay) ];
 
+          lib = nixpkgs.lib;
+
           # Import nixpkgs and load it into pkgs.
           # Overlay the rust toolchain
           pkgs = import nixpkgs {
@@ -52,17 +55,21 @@
           };
 
           # Set the rust toolchain from the `rust-toolchain.toml`.
-          rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../../rust-toolchain.toml;
+          # https://github.com/oxalica/rust-overlay/issues/199
+          rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../../toolchain-release.toml;
+          rustToolchainRelease = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../configs/rust/toolchain-release.toml;
 
           # Things needed only at compile-time.
           packagesBasic = with pkgs; [
-            findutils
-            coreutils
             bash
-            zsh
+            coreutils
             curl
+            findutils
             git
             jq
+            openssl
+            pkg-config
+            zsh
           ];
 
           # Things needed only at compile-time.
@@ -70,9 +77,25 @@
             rustToolchain
             cargo-watch
             just
+            skopeo
           ];
+
+          rootDir = ./../..;
+
+          catplus-converters = (import ./packages) {
+            inherit rootDir pkgs lib;
+            rustToolchain = rustToolchainRelease;
+          };
+
+          catplus-converters-image = (import ./images) {
+            inherit pkgs catplus-converters;
+          };
         in
         {
+          packages = {
+            inherit catplus-converters catplus-converters-image;
+          };
+
           devShells = {
             default = pkgs.mkShell {
               packages = packagesBasic ++ packagesDev;

@@ -11,7 +11,7 @@ default:
 
 # Build all crates
 build *args:
-    cargo build
+    cargo build {{args}}
 
 # Test all crates
 test *args:
@@ -27,14 +27,16 @@ lint *args:
   cargo clippy \
     --no-deps \
     -- -D warnings -A clippy::needless_return {{args}}
+# Run the converter.
+run input_type input_file output_file *args:
+    cd "{{root_dir}}/src/converter" && \
+    cargo run --bin converter \
+        "{{input_type}}" \
+        "{{root_dir}}/{{input_file}}" \
+        "{{root_dir}}/{{output_file}}" {{args}}
 
-alias dev := nix-develop
-# Enter a Nix development shell.
-nix-develop *args:
-    @echo "Starting nix developer shell in './tools/nix/flake.nix'."
-    cmd=("$@") && \
-    { [ -n "${cmd:-}" ] || cmd=("zsh"); } && \
-    nix develop ./tools/nix#default --accept-flake-config --command "${cmd[@]}"
+dev:
+  just nix::develop
 
 # Run the converter.
 convert *args:
@@ -64,3 +66,7 @@ shacl-start:
 shacl-stop:
   docker stop catplus-shacl-api &
 
+# Manage container image
+mod image './tools/just/image.just'
+# Nix operations
+mod nix './tools/just/nix.just'

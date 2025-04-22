@@ -1,11 +1,18 @@
-# Examples 
+# Builds
+build/
+
+# Examples
 examples/
 # Direnv
 .direnv
+.output
 
 # Rust Build
 target
 debug
+
+# Nix output
+result
 
 #OS specific
 .DS_Store
