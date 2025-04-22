@@ -60,6 +60,8 @@ namespace! {
     PeakList,
     Plate,
     ProcessedDataDocument,
+    preparesProduct,
+    producesProduct,
     Product,
     reactionSubType,
     reactionType,
