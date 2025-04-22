@@ -11,7 +11,7 @@ The data types are all in different formats, their data and metadata colluded to
 The converter parses a json input into an rdf graph and serializes the graph to either turtle or jsonld.
 It expects the input to conform to the cat+ ontology and the struct `src/catplus-common/src/models/types.rs`. Example input files are provided in `examples` directory.
 
-#### Usage
+#### Usage Single File
 
 The `converter` has four arguments:
 
@@ -22,11 +22,28 @@ The `converter` has four arguments:
 
 The `converter` turns the inputfile into a rdf graph and serializes it to either turtle or jsonld. The serialization is written to the provided outputfile.
 
-Examples
+Examples:
 
 ```
-just run synth examples/1-Synth.json examples/1-Synth.ttl turtle
-just run hci examples/0-HCI.json examples/0-HCI.ttl jsonld
+just convert synth examples/1-Synth.json examples/1-Synth.ttl turtle
+just convert hci examples/0-HCI.json examples/0-HCI.ttl jsonld
+just convert agilent examples/2-Agilent.json examples/2-Agilent.ttl turtle
+```
+
+#### Usage MultiFile
+
+The `converter-multifile` has four arguments:
+
+- input_folder: folder with different files (HCI, Synth, Agilent) that need to be parsed into RDF
+- output_folder: folder where the RDF files are saved
+- format: rdf output format, currently `turtle` or `jsonld`
+
+The `converter-multifile` iterates over all files in a folder and parses the filename to know which converter to run on the file. It skips any unknown files or RDF files (with extension ttl or jsonld). It turns each file (containing HCI, Synth or Agilent) into an rdf graph and serializes it to either turtle or jsonld. The serialization is written to the provided output folder.
+
+Example:
+
+```
+just convert-multifile examples/complex_model/Bravo2 examples/complex_model/Bravo2 turtle
 ```
 
 ### Architecture

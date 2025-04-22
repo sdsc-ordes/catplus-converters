@@ -40,6 +40,10 @@ nix-develop *args:
 convert *args:
   cargo run --bin converter -- {{args}}
 
+# Run the converter.
+convert-multifile *args:
+  cargo run --bin converter-multifile -- {{args}}
+
 # Run the validation.
 [group('validation')]
 validate +args:
