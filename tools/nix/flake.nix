@@ -83,15 +83,12 @@
           rootDir = ./../..;
 
           catplus-converters = (import ./packages) {
-            inherit rootDir;
-            inherit pkgs;
-            inherit lib;
-            inherit rustToolchainRelease;
+            inherit rootDir pkgs lib;
+            rustToolchain = rustToolchainRelease;
           };
 
           catplus-converters-image = (import ./images) {
-            inherit pkgs;
-            inherit catplus-converters;
+            inherit pkgs catplus-converters;
           };
         in
         {
