@@ -79,7 +79,7 @@ fn main() -> Result<()> {
             &args.format,
             args.materialize,
         ),
-        InputType::Bravo => json_to_rdf::<BravoBatch>(&input_content, &args.format),
+        InputType::Bravo => json_to_rdf::<BravoBatch>(&input_content, &args.format, args.materialize),
     }
     .with_context(|| format!("Failed to convert JSON to RDF format '{:?}'", &args.format))?;
 
