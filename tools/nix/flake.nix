@@ -56,7 +56,8 @@
 
           # Set the rust toolchain from the `rust-toolchain.toml`.
           # https://github.com/oxalica/rust-overlay/issues/199
-          rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../configs/rust/toolchain-release.toml;
+          rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../../toolchain-release.toml;
+          rustToolchainRelease = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ../configs/rust/toolchain-release.toml;
 
           # Things needed only at compile-time.
           packagesBasic = with pkgs; [
@@ -85,7 +86,7 @@
             inherit rootDir;
             inherit pkgs;
             inherit lib;
-            inherit rustToolchain;
+            inherit rustToolchainRelease;
           };
 
           catplus-converters-image = (import ./images) {
