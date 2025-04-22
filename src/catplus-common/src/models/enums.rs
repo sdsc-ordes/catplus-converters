@@ -25,6 +25,8 @@ pub enum Unit {
     MilliL,
     #[serde(rename = "mm^3")]
     MilliM3,
+    #[serde(rename = "uL")]
+    MicroL,
     #[serde(rename = "nM")]
     NanoM,
     #[serde(rename = "s")]
@@ -75,6 +77,7 @@ impl Unit {
             | Unit::MilliGM
             | Unit::MilliL
             | Unit::GMPerMilliL
+            | Unit::MicroL
             | Unit::GMPerMol
             | Unit::MolPerL
             | Unit::RevPerMin
