@@ -101,7 +101,11 @@ impl InsertIntoGraph for BravoAction {
             let literal_term: SimpleTerm<'_> = lexical_str * xsd::boolean;
             literal_term.attach_into(
                 graph,
-                Link { source_iri: iri.clone(), pred: cat::isSpmeProcess.as_simple(), target_iri: None },
+                Link {
+                    source_iri: iri.clone(),
+                    pred: cat::isSpmeProcess.as_simple(),
+                    target_iri: None,
+                },
             )?;
         }
 
