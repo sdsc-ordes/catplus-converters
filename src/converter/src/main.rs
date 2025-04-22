@@ -1,42 +1,29 @@
-use anyhow::{Context, Result};
 use catplus_common::models::{
     agilent::LiquidChromatographyAggregateDocumentWrapper, hci::CampaignWrapper, synth::SynthBatch,
 };
-use clap::Parser;
 use converter::convert::{json_to_rdf, RdfFormat};
-use serde::Deserialize;
+use converter::manage_input_output::{
+    define_output_folder, manage_input, manage_output, InputType,
+};
+
+use anyhow::{Context, Result};
+use clap::Parser;
 use std::{
-    fs::File,
-    io::{Read, Write},
+    fs::{self, File},
+    io::Read,
     path::Path,
 };
 
-// Derive Deserialize and ValueEnum
-#[derive(Deserialize, Debug, clap::ValueEnum, Clone)]
-enum InputType {
-    Synth,
-    HCI,
-    Agilent,
-}
-
-/// Converts CAT+ JSON input into RDF formats.
-///
-/// This tool expects data similar to examples/1-Synth.json or examples/0-HCI.json
-/// This data is then transformed to RDF and
-/// serialized as Turtle (ttl) or JSON-LD (jsonld).
 #[derive(Parser, Debug)]
 struct Args {
-    /// Type of input data: "Synth", "HCI" or "Agilent".
-    #[arg(value_enum)]
-    input_type: InputType,
+    /// Path to the input file or folder containing files.
+    input_path: String,
 
-    /// Path to the input JSON file.
-    input_file: String,
+    /// Path to the output folder. Defaults to input folder if not specified.
+    #[arg(long)]
+    output_folder: Option<String>,
 
-    /// Path to the output RDF file.
-    output_file: String,
-
-    /// Type of input data: "Turtle" or "Jsonld".
+    /// Output RDF format: "Turtle" or "Jsonld".
     #[arg(value_enum)]
     format: RdfFormat,
 
@@ -45,51 +32,73 @@ struct Args {
     materialize: bool,
 }
 
+
+fn process_file(
+    input_path: &Path,
+    output_folder: &Path,
+    format: &RdfFormat,
+    materialize: bool,
+) -> Result<()> {
+    let input_type = match manage_input(input_path)? {
+        Some(t) => t,
+        None => return Ok(()),
+    };
+
+    let mut input_content = String::new();
+    File::open(input_path)
+        .with_context(|| format!("Failed to open input file '{}'.", input_path.display()))?
+        .read_to_string(&mut input_content)
+        .with_context(|| format!("Failed to read input file '{}'.", input_path.display()))?;
+
+    let serialized_graph = match input_type {
+        InputType::Synth => json_to_rdf::<SynthBatch>(&input_content, format, materialize),
+        InputType::HCI => json_to_rdf::<CampaignWrapper>(&input_content, format, materialize),
+        InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
+            &input_content,
+            format,
+            materialize,
+        ),
+    }
+    .with_context(|| {
+        format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)
+    })?;
+
+    manage_output(input_path, output_folder, &serialized_graph, format)?;
+
+    Ok(())
+}
+
+
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    // Validate input file
-    let input_path = Path::new(&args.input_file);
+    let input_path = Path::new(&args.input_path);
     if !input_path.exists() {
-        anyhow::bail!("Input file '{}' does not exist.", args.input_file);
-    }
-    if !input_path.is_file() {
-        anyhow::bail!("'{}' is not a valid file.", args.input_file);
+        anyhow::bail!("Input path '{}' does not exist.", input_path.display());
     }
 
-    // Read input file
-    let mut input_content = String::new();
-    File::open(input_path)
-        .with_context(|| format!("Failed to open input file '{}'", args.input_file))?
-        .read_to_string(&mut input_content)
-        .with_context(|| format!("Failed to read input file '{}'", args.input_file))?;
+    let output_folder = define_output_folder(input_path, &args.output_folder)?;
 
-    // Unified conversion function with type selection
-    let serialized_graph = match args.input_type {
-        InputType::Synth => {
-            json_to_rdf::<SynthBatch>(&input_content, &args.format, args.materialize)
+    fs::create_dir_all(&output_folder).with_context(|| {
+        format!("Failed to create output folder '{}'.", output_folder.display())
+    })?;
+
+    if input_path.is_file() {
+        process_file(input_path, &output_folder, &args.format, args.materialize)?;
+    } else if input_path.is_dir() {
+        for entry in fs::read_dir(input_path)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file() {
+                process_file(&path, &output_folder, &args.format, args.materialize)?;
+            }
         }
-        InputType::HCI => {
-            json_to_rdf::<CampaignWrapper>(&input_content, &args.format, args.materialize)
-        }
-        InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-            &input_content,
-            &args.format,
-            args.materialize,
-        ),
+    } else {
+        anyhow::bail!("Input path '{}' is neither a file nor a directory.", input_path.display());
     }
-    .with_context(|| format!("Failed to convert JSON to RDF format '{:?}'", &args.format))?;
 
-    println!("Conversion successful!");
-
-    // Write to output file
-    let output_path = Path::new(&args.output_file);
-    let mut output = File::create(output_path)
-        .with_context(|| format!("Failed to create output file '{}'", args.output_file))?;
-    output
-        .write_all(serialized_graph.as_bytes())
-        .with_context(|| format!("Failed to write to output file '{}'", args.output_file))?;
-
-    println!("Processed content written to '{}'", output_path.display());
+    println!("All files processed.");
     Ok(())
 }
+
