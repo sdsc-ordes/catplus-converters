@@ -46,100 +46,48 @@ impl InsertIntoGraph for SynthBatch {
             if action.action_name == ActionName::AddAction {
                 if let Some(wells_vector) = &action.has_well {
                     if !wells_vector.is_empty() {
-                        // for every well a new Action is inserted in order to seperate the Add Actions
+                        // for every well a new Action is inserted in order to separate the Add Actions
                         // by the products they contribute to
                         for well in wells_vector {
-                            let new_action_iri = action.get_uri();
-                            graph.insert(
-                                &new_action_iri,
-                                cat::hasBatch.as_simple(),
-                                iri.clone(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &rdf::type_.as_simple(),
-                                &action.action_name.iri().as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &allores::AFX_0000622.as_simple(),
-                                &(action.start_time.as_str() * xsd::dateTime).as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &allores::AFR_0002423.as_simple(),
-                                &(action.ending_time.as_str() * xsd::dateTime).as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &allores::AFR_0001606.as_simple(),
-                                &action.method_name.as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &allores::AFR_0001723.as_simple(),
-                                &action.equipment_name.as_simple(),
-                            )?;
-                            graph.insert(
-                                &new_action_iri,
-                                &cat::subEquipmentName.as_simple(),
-                                &action.sub_equipment_name.as_simple(),
-                            )?;
-                            action.has_sample.attach_into(
-                                graph,
-                                Link {
-                                    source_iri: new_action_iri.clone(),
-                                    pred: cat::hasSample.as_simple(),
-                                    target_iri: None,
-                                },
-                            )?;
-                            if let Some(dispense_type) = &action.dispense_type {
-                                graph.insert(
-                                    &new_action_iri,
-                                    &cat::dispenseType.as_simple(),
-                                    dispense_type.as_simple(),
+                            println!("{:?}", well);
+                            let action_uri = action.get_uri();
+                            println!("{:?}", &action_uri);
+                            graph.insert(&action_uri, cat::hasBatch.as_simple(), iri.clone())?;
+                            for (pred, value) in [
+                                (rdf::type_, &action.action_name.iri().as_simple() as &dyn InsertIntoGraph),
+                                (allores::AFX_0000622, &(action.start_time.as_str() * xsd::dateTime).as_simple()),
+                                (allores::AFR_0002423, &(action.ending_time.as_str() * xsd::dateTime).as_simple()),
+                                (allores::AFR_0001606, &action.method_name.as_simple()),
+                                (allores::AFR_0001723, &action.equipment_name.as_simple()),
+                                (cat::subEquipmentName, &action.sub_equipment_name.as_simple()),
+                                (alloqual::AFQ_0000111, &action.dispense_state.as_ref().clone().map(|s| s.as_simple())),
+                                (cat::dispenseType, &action.dispense_type.as_ref().clone().map(|s| s.as_simple())),
+                                (cat::hasSample, &action.has_sample),
+                                (qudt::quantity, &well.quantity),
+                                (cat::hasWell, well),
+                            ] {
+                                value.attach_into(
+                                    graph,
+                                    Link { source_iri: action_uri.clone(), pred: pred.as_simple(), target_iri: None },
                                 )?;
                             }
-                            if let Some(dispense_state) = &action.dispense_state {
-                                graph.insert(
-                                    &new_action_iri,
-                                    &alloqual::AFQ_0000111.as_simple(),
-                                    dispense_state.as_simple(),
-                                )?;
-                            }
-                            well.quantity.attach_into(
-                                graph,
-                                Link {
-                                    source_iri: new_action_iri.clone(),
-                                    pred: qudt::quantity.as_simple(),
-                                    target_iri: None,
-                                },
-                            )?;
-                            well.attach_into(
-                                graph,
-                                Link {
-                                    source_iri: new_action_iri.clone(),
-                                    pred: cat::hasWell.as_simple(),
-                                    target_iri: None,
-                                },
-                            )?;
                             let product_id =
                                 format!("{}-{}", &well.has_plate.container_id, well.position);
-                            let new_product_iri = well.get_uri();
+                            let new_product_uri = well.get_uri();
                             graph.insert(
-                                &new_product_iri,
+                                &new_product_uri,
                                 &rdf::type_.as_simple(),
                                 &cat::Product.as_simple(),
                             )?;
                             graph.insert(
-                                &new_product_iri,
+                                &new_product_uri,
                                 &purl::identifier.as_simple(),
                                 product_id.as_simple(),
                             )?;
                             graph.insert(
-                                &new_action_iri,
+                                &action_uri,
                                 &cat::producesProduct.as_simple(),
-                                &new_product_iri,
+                                &new_product_uri,
                             )?;
                         }
                     }
