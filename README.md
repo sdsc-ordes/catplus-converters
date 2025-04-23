@@ -16,7 +16,7 @@ It expects the input to conform to the cat+ ontology and the struct `src/catplus
 The `converter` has the following arguments:
 
 - input_path: a file or a folder that need to be parsed into RDF
-- output_folder (optional): folder where the RDF file(s) will be saved
+- output_folder (optional): folder where the RDF file(s) will be saved. Defaults to input folder.
 - format: rdf output format, currently `turtle` or `jsonld`
 
 The `converter` can take a file or a folder. For a file, it selects the parser based on the filename (HCI, Synth or Agilent). If the input path is a folder then it iterates over all files in the folder and parses the filename to know which converter to run on each file. It skips any unknown files or RDF files (with extension ttl or jsonld). It turns each file (containing HCI, Synth or Agilent) into an rdf graph and serializes it to either turtle or jsonld. The serialization is written to the provided output folder or to the input folder, if no output folder is specified.
