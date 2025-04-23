@@ -11,7 +11,7 @@ The data types are all in different formats, their data and metadata colluded to
 The converter parses a json input into an rdf graph and serializes the graph to either turtle or jsonld.
 It expects the input to conform to the cat+ ontology and the struct `src/catplus-common/src/models/types.rs`. Example input files are provided in `examples` directory.
 
-#### Usage Single or Multi File(s)
+#### Usage
 
 The `converter` has the following arguments:
 
