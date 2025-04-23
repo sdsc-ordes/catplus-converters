@@ -13,6 +13,7 @@ pub enum InputType {
     Synth,
     HCI,
     Agilent,
+    Bravo,
 }
 
 pub trait RdfFormatExt {
