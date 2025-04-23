@@ -3,7 +3,9 @@ use catplus_common::models::{
 };
 use converter::{
     convert::{json_to_rdf, RdfFormat},
-    manage_io::{define_output_folder, determine_input_action, save_output, InputType, InputAction},
+    manage_io::{
+        define_output_folder, determine_input_action, save_output, InputAction, InputType,
+    },
 };
 
 use anyhow::{Context, Result};

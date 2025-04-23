@@ -55,12 +55,12 @@ pub fn determine_input_action(input_path: &Path) -> Result<InputAction> {
     if filename.ends_with(".ttl") || filename.ends_with(".jsonld") {
         return Ok(InputAction::Skip("Unknown extension.".to_string()));
     }
-    
+
     let action = match detect_input_type(filename) {
         Some(input_type) => InputAction::Process(input_type),
         None => InputAction::Skip("No matching type.".to_string()),
     };
-    return Ok(action)
+    return Ok(action);
 }
 
 pub fn save_output(
