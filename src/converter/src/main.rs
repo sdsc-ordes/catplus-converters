@@ -1,5 +1,6 @@
 use catplus_common::models::{
-    agilent::LiquidChromatographyAggregateDocumentWrapper, hci::CampaignWrapper, synth::SynthBatch,
+    agilent::LiquidChromatographyAggregateDocumentWrapper, bravo::BravoActionWrapper,
+    hci::CampaignWrapper, synth::SynthBatch,
 };
 use converter::{
     convert::{json_to_rdf, RdfFormat},
@@ -62,6 +63,9 @@ fn process_file(
             format,
             materialize,
         ),
+        InputType::Bravo => {
+            json_to_rdf::<BravoActionWrapper>(&input_content, format, materialize)
+        }
     }
     .with_context(|| {
         format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)

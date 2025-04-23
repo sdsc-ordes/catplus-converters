@@ -19,9 +19,10 @@ namespace! {
     MIN,
     PERCENT,
     NanoM,
+    MicroL,
+    MilliL,
     UNITLESS,
     CountsPerSec
-
 }
 
 lazy_static! {

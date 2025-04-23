@@ -21,8 +21,12 @@ pub enum Unit {
     MolPerL,
     #[serde(rename = "rpm")]
     RevPerMin,
+    #[serde(rename = "mL")]
+    MilliL,
     #[serde(rename = "mm^3")]
     MilliM3,
+    #[serde(rename = "uL")]
+    MicroL,
     #[serde(rename = "nM")]
     NanoM,
     #[serde(rename = "s")]
@@ -45,13 +49,15 @@ impl Unit {
     pub fn display_name(&self) -> &'static str {
         match self {
             Unit::Bar => "Bar",
-            Unit::DegC => "DEG-C",
+            Unit::DegC => "DEG_C",
             Unit::MilliGM => "MilliGM",
             Unit::GMPerMilliL => "GM-PER-MilliL",
             Unit::GMPerMol => "GM-PER-MOL",
             Unit::MolPerL => "MOL-PER-L",
             Unit::RevPerMin => "REV-PER-MIN",
+            Unit::MilliL => "MilliL",
             Unit::MilliM3 => "MilliM3",
+            Unit::MicroL => "MicroL",
             Unit::SEC => "SEC",
             Unit::MIN => "MIN",
             Unit::UNITLESS => "UNITLESS",
@@ -70,7 +76,9 @@ impl Unit {
             Unit::Bar
             | Unit::DegC
             | Unit::MilliGM
+            | Unit::MilliL
             | Unit::GMPerMilliL
+            | Unit::MicroL
             | Unit::GMPerMol
             | Unit::MolPerL
             | Unit::RevPerMin
@@ -97,7 +105,7 @@ impl fmt::Display for Unit {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[allow(non_snake_case, non_camel_case_types)]
 pub enum ActionName {
     AddAction,
@@ -106,6 +114,8 @@ pub enum ActionName {
     shakeAction,
     setVacuumAction,
     setPressureAction,
+    solventChangeAction,
+    EvaporationAction,
 }
 
 impl fmt::Display for ActionName {
@@ -123,6 +133,8 @@ impl ActionName {
             Self::shakeAction => cat::ShakeAction,
             Self::setVacuumAction => cat::SetVacuumAction,
             Self::filtrateAction => cat::FiltrateAction,
+            Self::EvaporationAction => cat::EvaporationAction,
+            Self::solventChangeAction => cat::SolventChangeAction,
         }
     }
 }

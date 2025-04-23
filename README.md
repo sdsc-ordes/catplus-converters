@@ -39,6 +39,16 @@ Example for a folder (multifiles) where the output folder is specified:
 just convert examples/complex_model/Bravo2/ turtle --output-folder=examples/rdf
 ```
 
+#### Deployment
+
+The rust code can be packaged and built into a docker image through Nix derivations. 
+Execute the following commands: 
+
+```
+just image build
+just image push
+```
+
 ### Architecture
 
 The json input is read with `serde_json`: the transformation into rdf is done by the `src/catplus-common` library.
