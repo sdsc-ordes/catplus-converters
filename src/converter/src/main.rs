@@ -63,9 +63,7 @@ fn process_file(
             format,
             materialize,
         ),
-        InputType::Bravo => {
-            json_to_rdf::<BravoActionWrapper>(&input_content, format, materialize)
-        }
+        InputType::Bravo => json_to_rdf::<BravoActionWrapper>(&input_content, format, materialize),
     }
     .with_context(|| {
         format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)
