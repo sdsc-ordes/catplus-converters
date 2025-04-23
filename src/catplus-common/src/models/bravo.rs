@@ -19,12 +19,12 @@ use sophia_api::term::{SimpleTerm, Term};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(rename = "Batch")]
-pub struct BravoBatch {
+pub struct BravoActionWrapper {
     #[serde(rename = "Actions")]
     pub actions: Option<Vec<BravoAction>>,
 }
 
-impl InsertIntoGraph for BravoBatch {
+impl InsertIntoGraph for BravoActionWrapper {
     fn insert_into(&self, graph: &mut LightGraph, _iri: SimpleTerm) -> anyhow::Result<()> {
         if let Some(actions) = &self.actions {
             for action in actions {

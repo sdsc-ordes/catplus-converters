@@ -1,4 +1,4 @@
-use catplus_common::{models::bravo::BravoBatch, rdf::rdf_parser::parse_turtle_to_graph};
+use catplus_common::{models::bravo::BravoActionWrapper, rdf::rdf_parser::parse_turtle_to_graph};
 use converter::convert::{json_to_rdf, RdfFormat};
 use sophia_isomorphism::isomorphic_graphs;
 
@@ -57,7 +57,7 @@ fn test_convert_bravo1_add_action() {
             ]
         }
     "#;
-    let result = json_to_rdf::<BravoBatch>(json_data, &output_format, false);
+    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -158,7 +158,7 @@ fn test_convert_bravo1_evaporation_action() {
             ]
         }
     "#;
-    let result = json_to_rdf::<BravoBatch>(json_data, &output_format, false);
+    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -279,7 +279,7 @@ fn test_convert_bravo1_solvent_change_action() {
             ]
         }
     "#;
-    let result = json_to_rdf::<BravoBatch>(json_data, &output_format, false);
+    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

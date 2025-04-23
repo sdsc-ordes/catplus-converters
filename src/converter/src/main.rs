@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use catplus_common::models::{
-    agilent::LiquidChromatographyAggregateDocumentWrapper, bravo::BravoBatch, hci::CampaignWrapper,
-    synth::SynthBatch,
+    agilent::LiquidChromatographyAggregateDocumentWrapper, bravo::BravoActionWrapper,
+    hci::CampaignWrapper, synth::SynthBatch,
 };
 use clap::Parser;
 use converter::convert::{json_to_rdf, RdfFormat};
@@ -80,7 +80,7 @@ fn main() -> Result<()> {
             args.materialize,
         ),
         InputType::Bravo => {
-            json_to_rdf::<BravoBatch>(&input_content, &args.format, args.materialize)
+            json_to_rdf::<BravoActionWrapper>(&input_content, &args.format, args.materialize)
         }
     }
     .with_context(|| format!("Failed to convert JSON to RDF format '{:?}'", &args.format))?;
