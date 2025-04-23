@@ -32,6 +32,7 @@ fn test_convert_filtrate_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
@@ -100,6 +101,7 @@ fn test_convert_pressure_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
@@ -190,6 +192,7 @@ fn test_convert_set_temperature_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
@@ -214,17 +217,17 @@ fn test_convert_set_temperature_action() {
             qudt:unit unit:REV-PER-MIN;
             qudt:value "152"^^xsd:double];
         cat:subEquipmentName "heater";
-        cat:temperatureShakerShape [ a cat:Observation;
+        cat:temperatureShaker [ a cat:Observation;
             cat:errorMargin [ a cat:errorMargin;
-                qudt:unit unit:DEG-C;
+                qudt:unit unit:DEG_C;
                 qudt:value "1"^^xsd:double];
-            qudt:unit unit:DEG-C;
+            qudt:unit unit:DEG_C;
             qudt:value "25"^^xsd:double];
-        cat:temperatureTumbleStirrerShape [ a cat:Observation;
+        cat:temperatureTumbleStirrer [ a cat:Observation;
             cat:errorMargin [ a cat:errorMargin;
-                qudt:unit unit:DEG-C;
+                qudt:unit unit:DEG_C;
                 qudt:value "2"^^xsd:double];
-            qudt:unit unit:DEG-C;
+            qudt:unit unit:DEG_C;
             qudt:value "25"^^xsd:double];
         allores:AFR_0001606 "set_temperature";
         allores:AFR_0001723 "Chemspeed SWING XL";
@@ -349,6 +352,7 @@ fn test_convert_add_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
@@ -362,8 +366,7 @@ fn test_convert_add_action() {
 
         [] a cat:AddAction;
         cat:dispenseType "volume";
-        cat:hasBatch [ a cat:Batch;
-            purl:identifier "23"];
+        cat:hasBatch _:befa2858-21b5-49bc-827e-b41e8fc141b6;
         cat:hasSample [ a cat:Sample;
             cat:expectedDatum [ a cat:Observation;
                 qudt:unit unit:MilliGM;
@@ -399,40 +402,88 @@ fn test_convert_add_action() {
                 purl:identifier "124";
                 alloqual:AFQ_0000111 "Liquid"];
             cat:role "reagent";
-            cat:vialShape "storage vial";
+            cat:vialType "storage vial";
             allores:AFR_0002464 "17"];
         cat:hasWell [ a cat:Well;
             cat:hasPlate [ a cat:Plate;
                 cat:containerID "1"];
-            allores:AFR_0002240 "B1";
-            qudt:quantity [ a cat:Observation;
-                cat:errorMargin [ a cat:errorMargin;
-                    qudt:unit unit:MilliGM;
-                    qudt:value "0.002"^^xsd:double];
-                qudt:unit unit:MilliGM;
-                qudt:value "0.034"^^xsd:double]],
-            [ a cat:Well;
-            cat:hasPlate [ a cat:Plate;
-                cat:containerID "1"];
-            allores:AFR_0002240 "A1";
-            qudt:quantity [ a cat:Observation;
-                cat:errorMargin [ a cat:errorMargin;
-                    qudt:unit unit:MilliGM;
-                    qudt:value "0.001"^^xsd:double];
-                qudt:unit unit:MilliGM;
-                qudt:value "0.024"^^xsd:double]];
-        cat:speedInRPM [ a cat:Observation;
-            cat:errorMargin [ a cat:errorMargin;
-                qudt:unit unit:REV-PER-MIN;
-                qudt:value "1"^^xsd:double];
-            qudt:unit unit:REV-PER-MIN;
-            qudt:value "152"^^xsd:double];
+            allores:AFR_0002240 "B1"];
+        cat:producesProduct [ a cat:Product;
+            purl:identifier "1-B1"];
         cat:subEquipmentName "GDU-V";
         alloqual:AFQ_0000111 "Liquid";
         allores:AFR_0001606 "addition";
         allores:AFR_0001723 "Chemspeed SWING XL";
         allores:AFR_0002423 "2024-07-25T12:01:35"^^xsd:dateTime;
-  allores:AFX_0000622 "2024-07-25T12:01:29"^^xsd:dateTime.
+        allores:AFX_0000622 "2024-07-25T12:01:29"^^xsd:dateTime;
+        qudt:quantity [ a cat:Observation;
+            cat:errorMargin [ a cat:errorMargin;
+                qudt:unit unit:MilliGM;
+                qudt:value "0.002"^^xsd:double];
+            qudt:unit unit:MilliGM;
+            qudt:value "0.034"^^xsd:double].
+
+        [] a cat:AddAction;
+        cat:dispenseType "volume";
+        cat:hasBatch _:befa2858-21b5-49bc-827e-b41e8fc141b6;
+        cat:hasSample [ a cat:Sample;
+            cat:expectedDatum [ a cat:Observation;
+                qudt:unit unit:MilliGM;
+                qudt:value "2"^^xsd:double];
+            cat:hasPlate [ a cat:Plate;
+                cat:containerBarcode "18";
+                cat:containerID "18"];
+            cat:hasSample [ a cat:Sample;
+                cat:expectedDatum [ a cat:Observation;
+                    qudt:unit unit:MilliGM;
+                    qudt:value "5"^^xsd:double];
+                cat:hasChemical [ a obo:CHEBI_25367;
+                    cat:casNumber "123-11-5";
+                    purl:identifier "134";
+                    allores:AFR_0001952 "C8H8O2";
+                    allores:AFR_0002292 "4-methoxybenzaldehyde";
+                    allores:AFR_0002294 [ a cat:Observation;
+                        qudt:unit unit:GM-PER-MOL;
+                        qudt:value "136.15"^^xsd:double];
+                    allores:AFR_0002295 "COC1=CC=C(C=C1)C=O";
+                    allores:AFR_0002296 "1S/C8H8O2/c1-10-8-4-2-7(6-9)3-5-8/h2-6H,1H3";
+                    obo:PATO_0001019 [ a cat:Observation;
+                        qudt:unit unit:GM-PER-MilliL;
+                        qudt:value "1.119"^^xsd:double]];
+                cat:internalBarCode "2";
+                cat:measuredQuantity [ a cat:Observation;
+                    cat:errorMargin [ a cat:errorMargin;
+                        qudt:unit unit:MilliGM;
+                        qudt:value "0.001"^^xsd:double];
+                    qudt:unit unit:MilliGM;
+                    qudt:value "1"^^xsd:double];
+                cat:role "reagent";
+                purl:identifier "124";
+                alloqual:AFQ_0000111 "Liquid"];
+            cat:role "reagent";
+            cat:vialType "storage vial";
+            allores:AFR_0002464 "17"];
+        cat:hasWell [ a cat:Well;
+            cat:hasPlate [ a cat:Plate;
+                cat:containerID "1"];
+            allores:AFR_0002240 "A1"];
+        cat:producesProduct [ a cat:Product;
+            purl:identifier "1-A1"];
+        cat:subEquipmentName "GDU-V";
+        alloqual:AFQ_0000111 "Liquid";
+        allores:AFR_0001606 "addition";
+        allores:AFR_0001723 "Chemspeed SWING XL";
+        allores:AFR_0002423 "2024-07-25T12:01:35"^^xsd:dateTime;
+        allores:AFX_0000622 "2024-07-25T12:01:29"^^xsd:dateTime;
+        qudt:quantity [ a cat:Observation;
+            cat:errorMargin [ a cat:errorMargin;
+                qudt:unit unit:MilliGM;
+                qudt:value "0.001"^^xsd:double];
+            qudt:unit unit:MilliGM;
+            qudt:value "0.024"^^xsd:double].
+
+        _:befa2858-21b5-49bc-827e-b41e8fc141b6 a cat:Batch;
+        purl:identifier "23".
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
     let result_ttl = result.as_ref().unwrap().as_str();
@@ -495,6 +546,7 @@ fn test_convert_shake_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
@@ -512,25 +564,25 @@ fn test_convert_shake_action() {
         cat:hasPlate [ a cat:Plate;
             cat:containerBarcode "1";
             cat:containerID "1"];
-        cat:speedTumbleStirrerShape [ a cat:Observation;
+        cat:subEquipmentName "Tumble Stirrer";
+        cat:temperatureShaker [ a cat:Observation;
+            cat:errorMargin [ a cat:errorMargin;
+                qudt:unit unit:DEG_C;
+                qudt:value "2"^^xsd:double];
+            qudt:unit unit:DEG_C;
+            qudt:value "25"^^xsd:double];
+        cat:temperatureTumbleStirrer [ a cat:Observation;
+            cat:errorMargin [ a cat:errorMargin;
+                qudt:unit unit:DEG_C;
+                qudt:value "1"^^xsd:double];
+            qudt:unit unit:DEG_C;
+            qudt:value "25"^^xsd:double];
+        alloprop:AFX_0000211 [ a cat:Observation;
             cat:errorMargin [ a cat:errorMargin;
                 qudt:unit unit:REV-PER-MIN;
                 qudt:value "1"^^xsd:double];
             qudt:unit unit:REV-PER-MIN;
             qudt:value "600"^^xsd:double];
-        cat:subEquipmentName "Tumble Stirrer";
-        cat:temperatureShakerShape [ a cat:Observation;
-            cat:errorMargin [ a cat:errorMargin;
-                qudt:unit unit:DEG-C;
-                qudt:value "2"^^xsd:double];
-            qudt:unit unit:DEG-C;
-            qudt:value "25"^^xsd:double];
-        cat:temperatureTumbleStirrerShape [ a cat:Observation;
-            cat:errorMargin [ a cat:errorMargin;
-                qudt:unit unit:DEG-C;
-                qudt:value "1"^^xsd:double];
-            qudt:unit unit:DEG-C;
-            qudt:value "25"^^xsd:double];
         allores:AFR_0001606 "shake";
         allores:AFR_0001723 "Chemspeed SWING XL";
         allores:AFR_0002423 "2024-07-25T12:15:20"^^xsd:dateTime;
@@ -581,6 +633,7 @@ fn test_convert_set_vacuum_action() {
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
         PREFIX allorole: <http://purl.allotrope.org/ontologies/role#>
         PREFIX alloproc: <http://purl.allotrope.org/ontologies/process#>
+        PREFIX alloprop: <http://purl.allotrope.org/ontologies/property#>
         PREFIX allocom: <http://purl.allotrope.org/ontologies/common#>
         PREFIX allohdf: <http://purl.allotrope.org/ontologies/hdf5/1.8#>
         PREFIX allohdfcube: <http://purl.allotrope.org/ontologies/datacube-hdf-map#>
