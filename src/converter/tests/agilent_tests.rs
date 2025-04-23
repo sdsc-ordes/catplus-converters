@@ -117,7 +117,7 @@ fn test_convert_liquid_chromatography() {
                                                     "value": 1.19008,
                                                     "unit": "min"
                                                 },
-                                                "peakIdentifier": "f81b4bcb-4d4a-41c7-8b34-5610e940d3ca",
+                                                "identifier": "f81b4bcb-4d4a-41c7-8b34-5610e940d3ca",
                                                 "peak end": {
                                                     "value": 1.68996,
                                                     "unit": "min"

@@ -3,7 +3,7 @@ use catplus_common::models::{
 };
 use converter::{
     convert::{json_to_rdf, RdfFormat},
-    manage_input_output::{define_output_folder, manage_input, manage_output, InputType},
+    manage_io::{define_output_folder, determine_input_action, save_output, InputType, InputAction},
 };
 
 use anyhow::{Context, Result};
@@ -38,9 +38,12 @@ fn process_file(
     format: &RdfFormat,
     materialize: bool,
 ) -> Result<()> {
-    let input_type = match manage_input(input_path)? {
-        Some(t) => t,
-        None => return Ok(()),
+    let input_type = match determine_input_action(input_path)? {
+        InputAction::Skip(reason) => {
+            println!("Skipping file '{}': {}", input_path.display(), reason);
+            return Ok(());
+        }
+        InputAction::Process(input_type) => input_type,
     };
 
     let mut input_content = String::new();
@@ -62,7 +65,7 @@ fn process_file(
         format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)
     })?;
 
-    manage_output(input_path, output_folder, &serialized_graph, format)?;
+    save_output(input_path, output_folder, &serialized_graph, format)?;
 
     Ok(())
 }

@@ -41,24 +41,29 @@ fn detect_input_type(filename: &str) -> Option<InputType> {
     }
 }
 
-pub fn manage_input(input_path: &Path) -> Result<Option<InputType>> {
-    let filename = input_path.file_name().and_then(|f| f.to_str()).context("Invalid filename")?;
-
+pub enum InputAction {
+    Skip(String), // reason
+    Process(InputType),
+}
+/// Decide what action to take on an input file.
+pub fn determine_input_action(input_path: &Path) -> Result<InputAction> {
+    let filename = input_path
+        .file_name()
+        .ok_or_else(|| anyhow::anyhow!("Input path has no filename"))?
+        .to_str()
+        .ok_or_else(|| anyhow::anyhow!("Filename is not valid UTF-8"))?;
     if filename.ends_with(".ttl") || filename.ends_with(".jsonld") {
-        println!("Skipping file '{}': already an RDF file.", filename);
-        return Ok(None);
+        return Ok(InputAction::Skip("Unknown extension.".to_string()));
     }
-
-    match detect_input_type(filename) {
-        Some(input_type) => Ok(Some(input_type)),
-        None => {
-            println!("Skipping file '{}': no matching type.", filename);
-            Ok(None)
-        }
-    }
+    
+    let action = match detect_input_type(filename) {
+        Some(input_type) => InputAction::Process(input_type),
+        None => InputAction::Skip("No matching type.".to_string()),
+    };
+    return Ok(action)
 }
 
-pub fn manage_output(
+pub fn save_output(
     input_path: &Path,
     output_folder: &Path,
     serialized_graph: &str,
