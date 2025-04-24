@@ -13,20 +13,30 @@ It expects the input to conform to the cat+ ontology and the struct `src/catplus
 
 #### Usage
 
-The `converter` has four arguments:
+The `converter` has the following arguments:
 
-- input_type: currently `synth` (see `examples/1-Synth.json`) or `hci` (see `examples/0-HCI.json`)
-- inputfile: path to input file (relative to top level of the repo or absolute)
-- outputfile: path to output file (relative to top level of the repo or absolute)
+- input_path: a file or a folder that need to be parsed into RDF
+- output_folder (optional): folder where the RDF file(s) will be saved. Defaults to input folder.
 - format: rdf output format, currently `turtle` or `jsonld`
 
-The `converter` turns the inputfile into a rdf graph and serializes it to either turtle or jsonld. The serialization is written to the provided outputfile.
+The `converter` can read a file or a folder. The parser is selected based on the filename for each input file (HCI, Synth or Agilent), and they are converted to RDF graphs in json-ld or turtle format. The serialization skips unknown files and writes outputs to the input folder, or the provided output folder if specified.
 
-Examples
+Example for a file:
 
 ```
-just run synth examples/1-Synth.json examples/1-Synth.ttl turtle
-just run hci examples/0-HCI.json examples/0-HCI.ttl jsonld
+just convert examples/2-Agilent.json turtle
+```
+
+Example for a folder (multifiles):
+
+```
+just convert examples/complex_model/Bravo2/ turtle
+```
+
+Example for a folder (multifiles) where the output folder is specified:
+
+```
+just convert examples/complex_model/Bravo2/ turtle --output-folder=examples/rdf
 ```
 
 #### Deployment

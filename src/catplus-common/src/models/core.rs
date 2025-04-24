@@ -158,7 +158,7 @@ impl InsertIntoGraph for PeakList {
 pub struct Peak {
     #[serde(rename = "@index")]
     pub index: i64,
-    #[serde(rename = "peakIdentifier")]
+    #[serde(rename = "identifier")]
     pub peak_identifier: String,
     #[serde(rename = "peak area")]
     pub peak_area: Measurement,
