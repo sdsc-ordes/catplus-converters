@@ -1,6 +1,11 @@
 use anyhow::{Context, Result};
 use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
 use serde::{de::DeserializeOwned, Deserialize};
+use std::{
+    fs::{self, File},
+    io::Read,
+    path::Path,
+};
 
 // Derive Deserialize and ValueEnum
 #[derive(Deserialize, Debug, clap::ValueEnum, Clone)]
@@ -19,14 +24,20 @@ pub enum RdfFormat {
 ///
 /// # Returns
 /// A `Result` containing the serialized graph as a string or an error.
-pub fn json_to_rdf<T>(input_content: &str, format: &RdfFormat, materialize: bool) -> Result<String>
+pub fn json_to_rdf<T>(input_path: &Path, format: &RdfFormat, materialize: bool) -> Result<String>
 where
     T: DeserializeOwned + InsertIntoGraph, // Trait bounds
 {
-    let data: T = parse_json(input_content).context("Failed to parse JSON input")?;
+    let mut input_content = String::new();
+    File::open(input_path)
+        .with_context(|| format!("Failed to open input file '{}'.", input_path.display()))?
+        .read_to_string(&mut input_content)
+        .with_context(|| format!("Failed to read input file '{}'.", input_path.display()))?;
+    let data: T = parse_json(&input_content).context("Failed to parse JSON input")?;
 
     let mut graph_builder = GraphBuilder::new();
     graph_builder.insert(&data).context("Failed to build RDF graph")?;
+    graph_builder.add_content(&input_path).context("Failed to add content URL to the graph")?;
 
     if materialize {
         graph_builder

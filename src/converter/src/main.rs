@@ -21,6 +21,7 @@ use std::{
 struct Args {
     /// Path to the input file or folder containing files.
     input_path: String,
+    /// batch/2025/10/01/24/ ....
 
     /// Path to the output folder. Defaults to input folder if not specified.
     #[arg(long)]
@@ -49,21 +50,15 @@ fn process_file(
         InputAction::Process(input_type) => input_type,
     };
 
-    let mut input_content = String::new();
-    File::open(input_path)
-        .with_context(|| format!("Failed to open input file '{}'.", input_path.display()))?
-        .read_to_string(&mut input_content)
-        .with_context(|| format!("Failed to read input file '{}'.", input_path.display()))?;
-
     let serialized_graph = match input_type {
-        InputType::Synth => json_to_rdf::<SynthBatch>(&input_content, format, materialize),
-        InputType::HCI => json_to_rdf::<CampaignWrapper>(&input_content, format, materialize),
+        InputType::HCI => json_to_rdf::<CampaignWrapper>(&input_path, format, materialize),
+        InputType::Synth => json_to_rdf::<SynthBatch>(&input_path, format, materialize),
         InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-            &input_content,
+            &input_path,
             format,
             materialize,
         ),
-        InputType::Bravo => json_to_rdf::<BravoActionWrapper>(&input_content, format, materialize),
+        InputType::Bravo => json_to_rdf::<BravoActionWrapper>(&input_path, format, materialize),
     }
     .with_context(|| {
         format!("Failed to convert '{}' to RDF format '{:?}'", input_path.display(), format)
