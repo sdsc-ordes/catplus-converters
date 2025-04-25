@@ -52,7 +52,7 @@ impl GraphBuilder {
     
         if let SimpleTerm::Iri(subject_iri) = subject {
             self.graph.insert(
-                subject_iri,
+                IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
                 schema::contentURL.as_simple(),
                 content_url
                     .to_str()
