@@ -1,0 +1,62 @@
+{
+    "Actions": [
+        {
+            "actionName": "solventChangeAction",
+            "methodName": "separation-cartridge-part-1",
+            "equipmentName": "SPE",
+            "subEquipmentName": "cartridge exchange",
+            "startTime": "2024-07-25T12:03:31",
+            "endingTime": "2024-07-25T12:15:20",
+            "SPMEprocess": true,
+            "productIdentification":{
+                "sampleID": "1-A1",
+                "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
+            },
+            "hasWell": {
+                "containerID": "157",
+                "containerBarcode": "1234858858754848",
+                "position": "A1"
+            },
+            "hasCartridge": {
+                "cartridgeName": "test-cartridge",
+                "cartridgeComposition": "test-material"
+            },
+            "startDuration": {
+                "value": 0,
+                "unit": "min"
+            },
+            "endingDuration": {
+                "value": 1,
+                "unit": "min"
+            },
+            "hasSolvent": {
+                "hasChemical": {
+                    "chemicalID": "25",
+                    "chemicalName": "Acetonitrile",
+                    "CASNumber": "75-05-8",
+                    "molecularMass": {
+                        "value": 41.05,
+                        "unit": "g/mol"
+                    },
+                    "smiles": "CC#N",
+                    "swissCatNumber": "SwissCAT-6342",
+                    "Inchi": "1S/C2H3N/c1-2-3/h1H3",
+                    "molecularFormula": "C2H3N",
+                    "density": {
+                        "value": 0.787,
+                        "unit": "g/mL"
+                    }
+                },
+                "volume": {
+                    "value": 50,
+                    "unit": "uL",
+                    "errorMargin": {
+                        "value": 0.5,
+                        "unit": "uL"
+                    }
+                }
+            },
+            "order": "3"
+        }
+    ]
+}

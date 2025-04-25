@@ -1,0 +1,96 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "AddAction",
+            "speedShaker": {
+                "value": 152,
+                "unit": "rpm",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "rpm"
+                }
+            },
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "GDU-V",
+            "hasWell": [
+                {
+                    "position": "A1",
+                    "containerID": "1",
+                    "quantity": {
+                        "value": 0.024,
+                        "unit": "mg",
+                        "errorMargin": {
+                            "value": 0.001,
+                            "unit": "mg"
+                        }
+                    }
+                },
+                {
+                    "position": "B1",
+                    "containerID": "1",
+                    "quantity": {
+                        "value": 0.034,
+                        "unit": "mg",
+                        "errorMargin": {
+                            "value": 0.002,
+                            "unit": "mg"
+                        }
+                    }
+                }
+            ],
+            "startTime": "2024-07-25T12:01:29",
+            "endingTime": "2024-07-25T12:01:35",
+            "methodName": "addition",
+            "dispenseState": "Liquid",
+            "dispenseType": "volume",
+            "hasSample": {
+                "expectedDatum": {
+                    "value": 2,
+                    "unit": "mg"
+                },
+                "containerID": "18",
+                "containerBarcode": "18",
+                "vialID": "17",
+                "vialType": "storage vial",
+                "role": "reagent",
+                "hasSample": [
+                    {
+                        "sampleID": "124",
+                        "role": "reagent",
+                        "internalBarCode": "2",
+                        "expectedDatum": {
+                            "value": 5,
+                            "unit": "mg"
+                        },
+                        "measuredQuantity": {
+                            "value": 1,
+                            "unit": "mg",
+                            "errorMargin": {
+                                "value": 0.001,
+                                "unit": "mg"
+                            }
+                        },
+                        "physicalState": "Liquid",
+                        "hasChemical": {
+                            "chemicalID": "134",
+                            "chemicalName": "4-methoxybenzaldehyde",
+                            "CASNumber": "123-11-5",
+                            "molecularMass": {
+                                "value": 136.15,
+                                "unit": "g/mol"
+                            },
+                            "smiles": "COC1=CC=C(C=C1)C=O",
+                            "Inchi": "1S/C8H8O2/c1-10-8-4-2-7(6-9)3-5-8/h2-6H,1H3",
+                            "molecularFormula": "C8H8O2",
+                            "density": {
+                                "value": 1.119,
+                                "unit": "g/mL"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "Actions": [
+        {
+            "actionName": "AddAction",
+            "methodName": "DilutionAddAction",
+            "equipmentName": "Micropipette",
+            "startTime": "2024-07-25T12:02:39",
+            "endingTime": "2024-07-25T12:02:41",
+            "dispenseState": "Liquid",
+            "dispenseType": "volume",
+            "productIdentification":{
+                "sampleID": "1-A1",
+                "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
+            },
+            "hasWell": {
+                "containerID": "157",
+                "containerBarcode": "1234858858754848",
+                "position": "A1"
+            },
+            "hasSolvent": {
+                "hasChemical": {
+                    "chemicalID": "14",
+                    "chemicalName": "Water",
+                    "CASNumber": "7732-18-5",
+                    "molecularMass": {
+                        "value": 18.015,
+                        "unit": "g/mol"
+                    },
+                    "smiles": "O",
+                    "swissCatNumber": "SwissCAT-962",
+                    "Inchi": "1S/H2O/h1H2",
+                    "molecularFormula": "H2O",
+                    "density": {
+                        "value": 1.000,
+                        "unit": "g/mL"
+                    }
+                },
+                "volume": {
+                    "value": 0.5,
+                    "unit": "mL",
+                    "errorMargin": {
+                        "value": 0.01,
+                        "unit": "mL"
+                    }
+                }
+            },
+            "order": "2"
+        }
+    ]
+}

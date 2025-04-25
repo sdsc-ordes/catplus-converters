@@ -1,0 +1,39 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "setTemperatureAction",
+            "speedShaker": {
+                "value": 152,
+                "unit": "rpm",
+                "errorMargin": {
+                    "value": 5,
+                    "unit": "rpm"
+                }
+            },
+            "temperatureTumbleStirrer": {
+                "value": 25,
+                "unit": "°C",
+                "errorMargin": {
+                    "value": 2,
+                    "unit": "°C"
+                }
+            },
+            "temperatureShaker": {
+                "value": 25,
+                "unit": "°C",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "°C"
+                }
+            },
+            "startTime": "2024-07-25T12:00:00",
+            "endingTime": "2024-07-25T12:00:02",
+            "methodName": "set_temperature",
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "heater",
+            "containerID": "1",
+            "containerBarcode": "1"
+            }
+        ]
+    }

@@ -1,0 +1,27 @@
+{
+    "liquid chromatography aggregate document": {
+        "device system document": {
+            "asset management identifier": "a7155146-e1d0-41be-99bf-eb2e55f9766e",
+            "device document": [
+                {
+                    "device identifier": "LC Pump",
+                    "device type": "Pump",
+                    "model number": "G7104C",
+                    "product manufacturer": "Agilent",
+                    "equipment serial number": "DEAGZ02881",
+                    "firmware version": "B.07.38 [0003]",
+                    "@index": 1
+                },
+                {
+                    "device identifier": "Sampler",
+                    "device type": "Autosampler",
+                    "model number": "G7167A",
+                    "product manufacturer": "Agilent",
+                    "equipment serial number": "DEAGW00219",
+                    "firmware version": "D.07.38 [0003]",
+                    "@index": 2
+                }
+            ]
+            }
+        }
+    }

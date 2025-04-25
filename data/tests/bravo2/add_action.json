@@ -1,0 +1,50 @@
+{
+    "Actions": [
+        {
+            "actionName": "AddAction",
+            "methodName": "DissolutionAddAction",
+            "equipmentName": "Micropipette",
+            "startTime": "2024-07-25T12:02:39",
+            "endingTime": "2024-07-25T12:02:41",
+            "dispenseState": "Liquid",
+            "dispenseType": "volume",
+            "productIdentification": {
+                "sampleID": "1-A1",
+                "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
+            },
+            "hasWell": {
+                "containerID": "157",
+                "containerBarcode": "1234858858754848",
+                "position": "A1"
+            },
+            "hasSolvent": {
+                "hasChemical": {
+                    "chemicalID": "25",
+                    "chemicalName": "Tetradeuteromethanol",
+                    "CASNumber": "811-98-3",
+                    "molecularMass": {
+                        "value": 36.07,
+                        "unit": "g/mol"
+                    },
+                    "smiles": "[2H]C([2H])([2H])O[2H]",
+                    "swissCatNumber": "SwissCAT-71568",
+                    "Inchi": "1S/CH4O/c1-2/h2H,1H3/i1D3,2D",
+                    "molecularFormula": "CH4O",
+                    "density": {
+                        "value": 0.89,
+                        "unit": "g/mL"
+                    }
+                },
+                "volume": {
+                    "value": 0.2,
+                    "unit": "mL",
+                    "errorMargin": {
+                        "value": 0.01,
+                        "unit": "mL"
+                    }
+                }
+            },
+            "order": "3"
+        }
+    ]
+}

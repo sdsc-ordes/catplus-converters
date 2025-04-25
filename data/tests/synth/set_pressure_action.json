@@ -1,0 +1,23 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "setPressureAction",
+            "pressureMeasurement": {
+                "value": 5,
+                "unit": "bar",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "bar"
+                }
+            },
+            "startTime": "2024-07-25T12:03:50",
+            "endingTime": "2024-07-25T12:04:05",
+            "methodName": "set_pressure",
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "MTP_Pressure",
+            "containerID": "1",
+            "containerBarcode": "1"
+        }
+    ]
+}

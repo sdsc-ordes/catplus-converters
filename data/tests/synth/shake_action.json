@@ -1,0 +1,39 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "shakeAction",
+            "speedTumbleStirrer": {
+                "value": 600,
+                "unit": "rpm",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "rpm"
+                }
+            },
+            "startTime": "2024-07-25T12:03:31",
+            "endingTime": "2024-07-25T12:15:20",
+            "methodName": "shake",
+            "temperatureTumbleStirrer": {
+                "value": 25,
+                "unit": "°C",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "°C"
+                }
+            },
+            "temperatureShaker": {
+                "value": 25,
+                "unit": "°C",
+                "errorMargin": {
+                    "value": 2,
+                    "unit": "°C"
+                }
+            },
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "Tumble Stirrer",
+            "containerID": "1",
+            "containerBarcode": "1"
+        }
+    ]
+}

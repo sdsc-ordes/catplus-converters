@@ -1,0 +1,27 @@
+{
+    "Actions": [
+        {
+            "actionName": "shakeAction",
+            "methodName": "shake",
+            "equipmentName": "magneticStirrer",
+            "subEquipmentName": "item-1",
+            "startTime": "2024-07-25T12:03:31",
+            "endingTime": "2024-07-25T12:15:20",
+            "containerID": "157",
+            "containerBarcode": "1234858858754848",
+            "productIdentification": {
+                "sampleID": "1-A1",
+                "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
+            },
+            "speedShaker": {
+                "value": 152,
+                "unit": "rpm",
+                "errorMargin": {
+                    "value": 1,
+                    "unit": "rpm"
+                }
+            },
+            "order": "5"
+        }
+    ]
+}
