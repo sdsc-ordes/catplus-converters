@@ -1,4 +1,3 @@
-use std::path::Path;
 
 use crate::{
     graph::namespaces::{allores, cat, schema},

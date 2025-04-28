@@ -2,8 +2,7 @@ use anyhow::{Context, Result};
 use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::{
-    convert::TryFrom,
-    fs::{self, File},
+    fs::File,
     io::Read,
     path::{Path, PathBuf},
 };
@@ -72,7 +71,7 @@ pub fn json_to_rdf<T>(config: &ConverterConfig) -> Result<String>
 where
     T: DeserializeOwned + InsertIntoGraph, // Trait bounds
 {
-    let mut input_content = read_to_string(Path::new(&config.input_path))?;
+    let input_content = read_to_string(Path::new(&config.input_path))?;
     let instances: T = parse_json(&input_content).context("Failed to parse JSON input")?;
     let mut builder = GraphBuilder::new();
     builder.insert(&instances)?;

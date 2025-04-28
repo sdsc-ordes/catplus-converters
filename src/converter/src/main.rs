@@ -8,14 +8,12 @@ use converter::{
         define_output_folder, determine_input_action, save_output, InputAction, InputType,
     },
 };
-use sophia::iri::wrap;
 use std::convert::Into;
 
 use anyhow::{Context, Result};
-use clap::{builder, Parser};
+use clap::Parser;
 use std::{
-    fs::{self, File},
-    io::Read,
+    fs::{self},
     path::{Path, PathBuf},
 };
 
