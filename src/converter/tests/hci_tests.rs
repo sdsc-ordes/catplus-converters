@@ -3,12 +3,13 @@ use converter::convert::{json_to_rdf, RdfFormat};
 use sophia_isomorphism::isomorphic_graphs;
 use std::path::Path;
 
+mod common;
+use common::get_test_config;
+
 #[test]
 fn test_convert_campaign() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/hci_campaign.json");
-    let result = json_to_rdf::<CampaignWrapper>(json_data.as_path(), &output_format, false);
+    let config = get_test_config("data/tests/hci_campaign.json");
+    let result = json_to_rdf::<CampaignWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

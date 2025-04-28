@@ -7,31 +7,22 @@ use converter::convert::{json_to_rdf, RdfFormat};
 use sophia_isomorphism::isomorphic_graphs;
 use std::path::Path;
 
+mod common;
+use common::get_test_config;
+
 #[test]
 fn test_materialize_blank_nodes() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent_blank_nodes.json");
+    let mut config = get_test_config("data/tests/agilent_blank_nodes.json");
+    config.materialize = true;
     let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        true,
+        &config
     );
-    //println!("{}", result.unwrap());
 }
 
 #[test]
 fn test_convert_liquid_chromatography() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data =
-        project_root.join("data/tests/agilent_liquid_chromatography_aggregate_document.json");
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        false,
-    );
-    println!("{:?}", result);
+    let config = get_test_config("data/tests/agilent_liquid_chromatography_aggregate_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
 
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -167,14 +158,8 @@ fn test_convert_liquid_chromatography() {
 
 #[test]
 fn test_convert_device_system_document() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent_device_system_document.json");
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        false,
-    );
+    let config = get_test_config("data/tests/agilent_device_system_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
