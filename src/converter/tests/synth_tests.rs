@@ -6,8 +6,9 @@ use std::path::Path;
 #[test]
 fn test_convert_filtrate_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/filtrate_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/filtrate_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -51,8 +52,9 @@ fn test_convert_filtrate_action() {
 #[test]
 fn test_convert_pressure_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/set_pressure_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/set_pressure_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -102,8 +104,9 @@ fn test_convert_pressure_action() {
 #[test]
 fn test_convert_set_temperature_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/set_temperature_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/set_temperature_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -165,8 +168,9 @@ fn test_convert_set_temperature_action() {
 #[test]
 fn test_convert_add_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/add_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/add_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -319,8 +323,9 @@ fn test_convert_add_action() {
 #[test]
 fn test_convert_shake_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/shake_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/shake_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -382,8 +387,9 @@ fn test_convert_shake_action() {
 #[test]
 fn test_convert_set_vacuum_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/synth/set_vacuum_action.json");
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/synth/set_vacuum_action.json");
+    let result = json_to_rdf::<SynthBatch>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

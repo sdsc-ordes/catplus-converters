@@ -1,13 +1,12 @@
 use std::path::Path;
 
 use crate::{
-    graph::namespaces::schema,
+    graph::namespaces::{allores, cat, schema},
     rdf::rdf_serializers::{serialize_graph_to_jsonld, serialize_graph_to_turtle},
 };
 use anyhow::{Context, Result};
 use sophia::inmem::graph::LightGraph;
 use sophia_api::{prelude::*, term::SimpleTerm};
-use uuid::fmt::Simple;
 
 use super::insert_into::InsertIntoGraph;
 
@@ -37,29 +36,50 @@ impl GraphBuilder {
 
     /// Adds a content URL to the graph.
     pub fn add_content(&mut self, content_url: &Path) -> Result<()> {
-        let triple = {
-            let triples = self
-                .graph
-                .triples_matching(Any, Any, ["Campaign", "AFR_0002524"])
-                .collect::<Result<Vec<_>, _>>()
-                .map_err(anyhow::Error::from)?;
+        let campaign = &cat::Campaign.as_simple();
+        let liquid_chromatography_document = &allores::AFR_0002524.as_simple();
 
-            triples.into_iter().next().ok_or_else(|| anyhow::anyhow!("No triples found"))?
-        };
+        let triples = self
+            .graph
+            .triples_matching(Any, Any, [campaign, liquid_chromatography_document])
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(anyhow::Error::from)?;
 
+        // exit with warning if no triples are found.
+        if triples.is_empty() {
+            println!("Warning: No triples found for contentURL insertion.");
+            return Ok(());
+        }
+
+        let triple = triples.into_iter().next().unwrap();
         let [subject, _, _] = triple;
 
-        if let SimpleTerm::Iri(subject_iri) = subject {
-            self.graph.insert(
-                IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
-                schema::contentURL.as_simple(),
-                content_url
-                    .to_str()
-                    .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
-                    .as_simple(),
-            )?;
-        } else {
-            return Err(anyhow::anyhow!("Unable to add contentURL to graph"));
+        match subject {
+            SimpleTerm::Iri(subject_iri) => {
+                self.graph.insert(
+                    IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
+                    schema::contentURL.as_simple(),
+                    content_url
+                        .to_str()
+                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
+                        .as_simple(),
+                )?;
+            }
+            SimpleTerm::BlankNode(subject_bnode) => {
+                self.graph.insert(
+                    subject_bnode.clone(),
+                    schema::contentURL.as_simple(),
+                    content_url
+                        .to_str()
+                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
+                        .as_simple(),
+                )?;
+            }
+            _ => {
+                return Err(anyhow::anyhow!(
+                    "Subject must be either an IRI or a BlankNode to add contentURL"
+                ));
+            }
         }
 
         Ok(())

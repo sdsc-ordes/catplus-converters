@@ -6,8 +6,9 @@ use std::path::Path;
 #[test]
 fn test_convert_bravo2_add_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/bravo2/add_action.json");
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/bravo2/add_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -72,8 +73,9 @@ fn test_convert_bravo2_add_action() {
 #[test]
 fn test_convert_bravo2_evaporation_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/bravo2/evaporation_action.json");
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let json_data = project_root.join("data/tests/bravo2/evaporation_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
