@@ -7,7 +7,7 @@ use std::path::Path;
 fn test_convert_bravo1_add_action() {
     let output_format = RdfFormat::Turtle;
     let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/bravo1/add_action.json");
+    let json_data = project_root.join("data/tests/bravo1_add_action.json");
     let result = json_to_rdf::<BravoActionWrapper>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -74,7 +74,7 @@ fn test_convert_bravo1_add_action() {
 fn test_convert_bravo1_evaporation_action() {
     let output_format = RdfFormat::Turtle;
     let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/bravo1/evaporation_action.json");
+    let json_data = project_root.join("data/tests/bravo1_evaporation_action.json");
     let result = json_to_rdf::<BravoActionWrapper>(json_data.as_path(), &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -132,7 +132,7 @@ fn test_convert_bravo1_evaporation_action() {
 #[test]
 fn test_convert_bravo1_solvent_change_action() {
     let output_format = RdfFormat::Turtle;
-    let json_data = Path::new("data/tests/bravo1/solvent_change_action.json");
+    let json_data = Path::new("data/tests/bravo1_solvent_change_action.json");
     let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

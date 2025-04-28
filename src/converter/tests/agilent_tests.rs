@@ -11,7 +11,7 @@ use std::path::Path;
 fn test_materialize_blank_nodes() {
     let output_format = RdfFormat::Turtle;
     let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent/blank_nodes.json");
+    let json_data = project_root.join("data/tests/agilent_blank_nodes.json");
     let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
         json_data.as_path(),
         &output_format,
@@ -25,7 +25,7 @@ fn test_convert_liquid_chromatography() {
     let output_format = RdfFormat::Turtle;
     let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
     let json_data =
-        project_root.join("data/tests/agilent/liquid_chromatography_aggregate_document.json");
+        project_root.join("data/tests/agilent_liquid_chromatography_aggregate_document.json");
     let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
         json_data.as_path(),
         &output_format,
@@ -169,7 +169,7 @@ fn test_convert_liquid_chromatography() {
 fn test_convert_device_system_document() {
     let output_format = RdfFormat::Turtle;
     let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent/device_system_document.json");
+    let json_data = project_root.join("data/tests/agilent_device_system_document.json");
     let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
         json_data.as_path(),
         &output_format,
