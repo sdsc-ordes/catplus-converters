@@ -1,11 +1,9 @@
 use catplus_common::{
-    graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph},
     models::agilent::LiquidChromatographyAggregateDocumentWrapper,
     rdf::rdf_parser::parse_turtle_to_graph,
 };
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
-use std::path::Path;
 
 mod common;
 use common::get_test_config;
@@ -14,7 +12,7 @@ use common::get_test_config;
 fn test_materialize_blank_nodes() {
     let mut config = get_test_config("data/tests/agilent_blank_nodes.json");
     config.materialize = true;
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
+    let _ = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
 }
 
 #[test]

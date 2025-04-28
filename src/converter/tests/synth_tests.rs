@@ -5,6 +5,7 @@ use sophia_isomorphism::isomorphic_graphs;
 mod common;
 use common::get_test_config;
 
+#[test]
 fn test_convert_filtrate_action() {
     let config = get_test_config("data/tests/synth_filtrate_action.json");
     let result = json_to_rdf::<SynthBatch>(&config);
