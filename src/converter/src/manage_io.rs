@@ -85,19 +85,19 @@ pub fn save_output(
     Ok(())
 }
 
-pub fn define_output_folder(input_path: &Path, user_specified: &Option<String>) -> Result<PathBuf> {
+/// Defines a fallback output folder based on input file in case  it is missing.
+pub fn define_output_folder(input_path: &PathBuf, provided_output_folder: &Option<PathBuf>) -> Result<PathBuf> {
     let default_output_folder = if input_path.is_file() {
         input_path
             .parent()
-            .map(Path::to_path_buf)
             .context("Failed to get parent folder of input file")?
     } else {
-        input_path.to_path_buf()
+        input_path
     };
 
-    let output_folder = match user_specified {
+    let output_folder = match provided_output_folder {
         Some(folder) => PathBuf::from(folder),
-        None => default_output_folder,
+        _ => default_output_folder.to_path_buf(),
     };
 
     Ok(output_folder)
