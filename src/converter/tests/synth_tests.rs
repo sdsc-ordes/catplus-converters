@@ -1,11 +1,10 @@
 use catplus_common::{models::synth::SynthBatch, rdf::rdf_parser::parse_turtle_to_graph};
-use converter::convert::{ConverterConfig, json_to_rdf, RdfFormat};
+use converter::convert::{json_to_rdf, ConverterConfig, RdfFormat};
 use sophia_isomorphism::isomorphic_graphs;
 use std::path::Path;
 
 mod common;
 use common::get_test_config;
-
 
 fn test_convert_filtrate_action() {
     let config = get_test_config("data/tests/synth_filtrate_action.json");

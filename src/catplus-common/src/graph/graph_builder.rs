@@ -48,13 +48,11 @@ impl GraphBuilder {
         // exit with warning if no triples are found.
         if triples.is_empty() {
             println!("Warning: No triples found for contentURL insertion.");
-            return Ok(())
+            return Ok(());
         } else if triples.len() > 1 {
-            return Err(anyhow::anyhow!(
-                "Multiple triples found for contentURL insertion"
-            ));
+            return Err(anyhow::anyhow!("Multiple triples found for contentURL insertion"));
         }
-            
+
         let triple = triples.into_iter().next().unwrap();
         let [subject, _, _] = triple;
 

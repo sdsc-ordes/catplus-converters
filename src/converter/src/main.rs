@@ -2,14 +2,14 @@ use catplus_common::models::{
     agilent::LiquidChromatographyAggregateDocumentWrapper, bravo::BravoActionWrapper,
     hci::CampaignWrapper, synth::SynthBatch,
 };
-use sophia::iri::wrap;
-use std::convert::Into;
 use converter::{
-    convert::{ConverterConfig, json_to_rdf, RdfFormat},
+    convert::{json_to_rdf, ConverterConfig, RdfFormat},
     manage_io::{
         define_output_folder, determine_input_action, save_output, InputAction, InputType,
     },
 };
+use sophia::iri::wrap;
+use std::convert::Into;
 
 use anyhow::{Context, Result};
 use clap::{builder, Parser};
@@ -37,7 +37,6 @@ struct Args {
     #[arg(long)]
     prefix: Option<String>,
 
-
     /// Materialize blank nodes
     #[arg(long, default_value_t = false)]
     materialize: bool,
@@ -54,10 +53,7 @@ impl Into<ConverterConfig> for Args {
     }
 }
 
-fn process_file(
-    config: ConverterConfig,
-    output_folder: &Path,
-) -> Result<()> {
+fn process_file(config: ConverterConfig, output_folder: &Path) -> Result<()> {
     let input_path = config.input_path.clone();
     let format = config.format.clone();
     let input_type = match determine_input_action(input_path.as_path())? {
@@ -68,13 +64,10 @@ fn process_file(
         InputAction::Process(input_type) => input_type,
     };
 
-
     let serialized_graph = match input_type {
         InputType::HCI => json_to_rdf::<CampaignWrapper>(&config),
         InputType::Synth => json_to_rdf::<SynthBatch>(&config),
-        InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-            &config,
-        ),
+        InputType::Agilent => json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config),
         InputType::Bravo => json_to_rdf::<BravoActionWrapper>(&config),
     }
     .with_context(|| {
@@ -88,11 +81,9 @@ fn process_file(
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    
+
     let input_path = args.input_path.clone();
-    let output_folder = args
-        .output_folder
-        .clone();
+    let output_folder = args.output_folder.clone();
     let config: ConverterConfig = args.into();
     if !input_path.exists() {
         anyhow::bail!("Input path '{}' does not exist.", input_path.display());

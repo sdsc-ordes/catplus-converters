@@ -24,7 +24,6 @@ pub struct ConverterConfig {
     pub materialize: bool,
 }
 
-
 fn read_to_string(path: &Path) -> Result<String> {
     let mut content = String::new();
     File::open(path)
@@ -36,33 +35,26 @@ fn read_to_string(path: &Path) -> Result<String> {
 
 /// Builds the content file URI using an absolute path, or prefix and relative path.
 fn build_file_uri(prefix: Option<String>, path: &Path) -> Result<String> {
-
     if let Some(ref p) = prefix {
         if p.is_empty() {
-            return Err(anyhow::anyhow!(
-                "Cannot use empty prefix."
-            ));
+            return Err(anyhow::anyhow!("Cannot use empty prefix."));
         }
     }
 
     match (prefix, path.is_absolute()) {
         // Prefix, Relative path
-        (Some(p), false) => {
-            return Ok(format!("{}{}", p, path.to_string_lossy()))
-        },
+        (Some(p), false) => return Ok(format!("{}{}", p, path.to_string_lossy())),
         // No prefix, relative path
         (_, false) => {
-            return Err(anyhow::anyhow!(
-            "Cannot build URI for relative path without a prefix."
-            ))
-        },
+            return Err(anyhow::anyhow!("Cannot build URI for relative path without a prefix."))
+        }
         // Absolute path -> ignore prefix
         (p, true) => {
             if p.is_some() {
                 println!("Prefix is ignored with absolute paths")
             }
-            return Ok(format!("file://{}", path.to_string_lossy()))
-        },
+            return Ok(format!("file://{}", path.to_string_lossy()));
+        }
     }
 }
 
@@ -80,7 +72,6 @@ pub fn json_to_rdf<T>(config: &ConverterConfig) -> Result<String>
 where
     T: DeserializeOwned + InsertIntoGraph, // Trait bounds
 {
-
     let mut input_content = read_to_string(Path::new(&config.input_path))?;
     let instances: T = parse_json(&input_content).context("Failed to parse JSON input")?;
     let mut builder = GraphBuilder::new();
@@ -88,8 +79,7 @@ where
 
     let uri = build_file_uri(config.prefix.clone(), Path::new(&config.input_path))
         .context("Failed to build file URI")?;
-    builder.link_content(&uri)
-        .context("Failed to add content URL to the graph")?;
+    builder.link_content(&uri).context("Failed to add content URL to the graph")?;
 
     if config.materialize {
         builder

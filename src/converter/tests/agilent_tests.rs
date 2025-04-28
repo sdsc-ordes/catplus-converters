@@ -14,14 +14,13 @@ use common::get_test_config;
 fn test_materialize_blank_nodes() {
     let mut config = get_test_config("data/tests/agilent_blank_nodes.json");
     config.materialize = true;
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        &config
-    );
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
 }
 
 #[test]
 fn test_convert_liquid_chromatography() {
-    let config = get_test_config("data/tests/agilent_liquid_chromatography_aggregate_document.json");
+    let config =
+        get_test_config("data/tests/agilent_liquid_chromatography_aggregate_document.json");
     let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
 
