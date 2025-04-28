@@ -2,9 +2,10 @@ use anyhow::{Context, Result};
 use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::{
+    convert::TryFrom,
     fs::{self, File},
     io::Read,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 // Derive Deserialize and ValueEnum
@@ -12,6 +13,57 @@ use std::{
 pub enum RdfFormat {
     Turtle,
     Jsonld,
+}
+
+/// Configuration struct for the converter
+#[derive(Clone, Debug)]
+pub struct ConverterConfig {
+    pub input_path: PathBuf,
+    pub format: RdfFormat,
+    pub prefix: Option<String>,
+    pub materialize: bool,
+}
+
+
+fn read_to_string(path: &Path) -> Result<String> {
+    let mut content = String::new();
+    File::open(path)
+        .with_context(|| format!("Failed to open file '{}'.", path.display()))?
+        .read_to_string(&mut content)
+        .with_context(|| format!("Failed to read file '{}'.", path.display()))?;
+    Ok(content)
+}
+
+/// Builds the content file URI using an absolute path, or prefix and relative path.
+fn build_file_uri(prefix: Option<String>, path: &Path) -> Result<String> {
+
+    if let Some(ref p) = prefix {
+        if p.is_empty() {
+            return Err(anyhow::anyhow!(
+                "Cannot use empty prefix."
+            ));
+        }
+    }
+
+    match (prefix, path.is_absolute()) {
+        // Prefix, Relative path
+        (Some(p), false) => {
+            return Ok(format!("{}{}", p, path.to_string_lossy()))
+        },
+        // No prefix, relative path
+        (_, false) => {
+            return Err(anyhow::anyhow!(
+            "Cannot build URI for relative path without a prefix."
+            ))
+        },
+        // Absolute path -> ignore prefix
+        (p, true) => {
+            if p.is_some() {
+                println!("Prefix is ignored with absolute paths")
+            }
+            return Ok(format!("file://{}", path.to_string_lossy()))
+        },
+    }
 }
 
 /// Parses JSON and serializes the RDF graph to the specified format.
@@ -24,33 +76,33 @@ pub enum RdfFormat {
 ///
 /// # Returns
 /// A `Result` containing the serialized graph as a string or an error.
-pub fn json_to_rdf<T>(input_path: &Path, format: &RdfFormat, materialize: bool) -> Result<String>
+pub fn json_to_rdf<T>(config: &ConverterConfig) -> Result<String>
 where
     T: DeserializeOwned + InsertIntoGraph, // Trait bounds
 {
-    let mut input_content = String::new();
-    File::open(input_path)
-        .with_context(|| format!("Failed to open input file '{}'.", input_path.display()))?
-        .read_to_string(&mut input_content)
-        .with_context(|| format!("Failed to read input file '{}'.", input_path.display()))?;
-    let data: T = parse_json(&input_content).context("Failed to parse JSON input")?;
 
-    let mut graph_builder = GraphBuilder::new();
-    graph_builder.insert(&data).context("Failed to build RDF graph")?;
-    graph_builder.add_content(&input_path).context("Failed to add content URL to the graph")?;
+    let mut input_content = read_to_string(Path::new(&config.input_path))?;
+    let instances: T = parse_json(&input_content).context("Failed to parse JSON input")?;
+    let mut builder = GraphBuilder::new();
+    builder.insert(&instances)?;
 
-    if materialize {
-        graph_builder
+    let uri = build_file_uri(config.prefix.clone(), Path::new(&config.input_path))
+        .context("Failed to build file URI")?;
+    builder.link_content(&uri)
+        .context("Failed to add content URL to the graph")?;
+
+    if config.materialize {
+        builder
             .materialize_blank_nodes(Some("http://example.org/cat/resource/"))
             .context("Failed to materialize blank nodes")?;
     }
 
-    let serialized_graph = match format {
+    let serialized_graph = match &config.format {
         RdfFormat::Jsonld => {
-            graph_builder.serialize_to_jsonld().context("Failed to serialize to JSON-LD")?
+            builder.serialize_to_jsonld().context("Failed to serialize to JSON-LD")?
         }
         RdfFormat::Turtle => {
-            graph_builder.serialize_to_turtle().context("Failed to serialize to Turtle")?
+            builder.serialize_to_turtle().context("Failed to serialize to Turtle")?
         }
     };
 
