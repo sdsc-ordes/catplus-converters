@@ -27,13 +27,6 @@ lint *args:
   cargo clippy \
     --no-deps \
     -- -D warnings -A clippy::needless_return {{args}}
-# Run the converter.
-run input_type input_file output_file *args:
-    cd "{{root_dir}}/src/converter" && \
-    cargo run --bin converter \
-        "{{input_type}}" \
-        "{{root_dir}}/{{input_file}}" \
-        "{{root_dir}}/{{output_file}}" {{args}}
 
 dev:
   just nix::develop
