@@ -35,7 +35,7 @@ impl GraphBuilder {
     }
 
     /// Adds a content URL to the graph.
-    pub fn add_content(&mut self, content_url: &Path) -> Result<()> {
+    pub fn link_content(&mut self, content_url: &str) -> Result<()> {
         let campaign = &cat::Campaign.as_simple();
         let liquid_chromatography_document = &allores::AFR_0002524.as_simple();
 
@@ -48,9 +48,13 @@ impl GraphBuilder {
         // exit with warning if no triples are found.
         if triples.is_empty() {
             println!("Warning: No triples found for contentURL insertion.");
-            return Ok(());
+            return Ok(())
+        } else if triples.len() > 1 {
+            return Err(anyhow::anyhow!(
+                "Multiple triples found for contentURL insertion"
+            ));
         }
-
+            
         let triple = triples.into_iter().next().unwrap();
         let [subject, _, _] = triple;
 
@@ -59,20 +63,14 @@ impl GraphBuilder {
                 self.graph.insert(
                     IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
                     schema::contentURL.as_simple(),
-                    content_url
-                        .to_str()
-                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
-                        .as_simple(),
+                    content_url.as_simple(),
                 )?;
             }
             SimpleTerm::BlankNode(subject_bnode) => {
                 self.graph.insert(
                     subject_bnode.clone(),
                     schema::contentURL.as_simple(),
-                    content_url
-                        .to_str()
-                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
-                        .as_simple(),
+                    content_url.as_simple(),
                 )?;
             }
             _ => {
