@@ -1,11 +1,8 @@
 use anyhow::{Context, Result};
 use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
 use serde::{de::DeserializeOwned, Deserialize};
-use std::{
-    fs::File,
-    io::Read,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
+use crate::io::read_to_string;
 
 // Derive Deserialize and ValueEnum
 #[derive(Deserialize, Debug, clap::ValueEnum, Clone)]
@@ -21,15 +18,6 @@ pub struct ConverterConfig {
     pub format: RdfFormat,
     pub prefix: Option<String>,
     pub materialize: bool,
-}
-
-fn read_to_string(path: &Path) -> Result<String> {
-    let mut content = String::new();
-    File::open(path)
-        .with_context(|| format!("Failed to open file '{}'.", path.display()))?
-        .read_to_string(&mut content)
-        .with_context(|| format!("Failed to read file '{}'.", path.display()))?;
-    Ok(content)
 }
 
 /// Builds the content file URI using an absolute path, or prefix and relative path.

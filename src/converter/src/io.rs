@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::{
     fs::File,
-    io::Write,
+    io::{Read, Write},
     path::{Path, PathBuf},
 };
 
@@ -28,6 +28,16 @@ impl RdfFormatExt for RdfFormat {
         }
     }
 }
+
+pub(crate) fn read_to_string(path: &Path) -> Result<String> {
+    let mut content = String::new();
+    File::open(path)
+        .with_context(|| format!("Failed to open file '{}'.", path.display()))?
+        .read_to_string(&mut content)
+        .with_context(|| format!("Failed to read file '{}'.", path.display()))?;
+    Ok(content)
+}
+
 
 fn detect_input_type(filename: &str) -> Option<InputType> {
     let lowercase = filename.to_lowercase();
