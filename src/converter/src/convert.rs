@@ -1,8 +1,8 @@
+use crate::io::read_to_string;
 use anyhow::{Context, Result};
 use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::path::{Path, PathBuf};
-use crate::io::read_to_string;
 
 // Derive Deserialize and ValueEnum
 #[derive(Deserialize, Debug, clap::ValueEnum, Clone)]

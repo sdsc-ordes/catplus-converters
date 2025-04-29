@@ -38,7 +38,6 @@ pub(crate) fn read_to_string(path: &Path) -> Result<String> {
     Ok(content)
 }
 
-
 fn detect_input_type(filename: &str) -> Option<InputType> {
     let lowercase = filename.to_lowercase();
     if lowercase.contains("synth") {
