@@ -73,25 +73,25 @@ where
 {
     let input_content = read_to_string(Path::new(&config.input_path))?;
     let instances: T = parse_json(&input_content).context("Failed to parse JSON input")?;
-    let mut builder = GraphBuilder::new();
-    builder.insert(&instances)?;
+    let mut graph_builder = GraphBuilder::new();
+    graph_builder.insert(&instances)?;
 
     let uri = build_file_uri(config.prefix.clone(), Path::new(&config.input_path))
         .context("Failed to build file URI")?;
-    builder.link_content(&uri).context("Failed to add content URL to the graph")?;
+    graph_builder.link_content(&uri).context("Failed to add content URL to the graph")?;
 
     if config.materialize {
-        builder
+        graph_builder
             .materialize_blank_nodes(Some("http://example.org/cat/resource/"))
             .context("Failed to materialize blank nodes")?;
     }
 
     let serialized_graph = match &config.format {
         RdfFormat::Jsonld => {
-            builder.serialize_to_jsonld().context("Failed to serialize to JSON-LD")?
+            graph_builder.serialize_to_jsonld().context("Failed to serialize to JSON-LD")?
         }
         RdfFormat::Turtle => {
-            builder.serialize_to_turtle().context("Failed to serialize to Turtle")?
+            graph_builder.serialize_to_turtle().context("Failed to serialize to Turtle")?
         }
     };
 
