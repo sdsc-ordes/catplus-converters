@@ -47,6 +47,8 @@ fn detect_input_type(filename: &str) -> Option<InputType> {
         Some(InputType::HCI)
     } else if lowercase.contains("agilent") {
         Some(InputType::Agilent)
+    } else if lowercase.contains("bravo") {
+        Some(InputType::Bravo)
     } else {
         None
     }

@@ -51,6 +51,13 @@ impl GraphBuilder {
             return Err(anyhow::anyhow!("Multiple triples found for contentURL insertion"));
         }
 
+        // return error if more than one triple is found
+        if triples.len() > 1 {
+            return Err(anyhow::anyhow!(
+                "Multiple triples found for contentURL insertion. There should only be one."
+            ));
+        }
+
         let triple = triples.into_iter().next().unwrap();
         let [subject, _, _] = triple;
 
