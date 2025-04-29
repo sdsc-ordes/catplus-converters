@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use crate::{
     graph::namespaces::{allores, cat, schema},
     rdf::rdf_serializers::{serialize_graph_to_jsonld, serialize_graph_to_turtle},
@@ -35,7 +33,7 @@ impl GraphBuilder {
     }
 
     /// Adds a content URL to the graph.
-    pub fn add_content(&mut self, content_url: &Path) -> Result<()> {
+    pub fn link_content(&mut self, content_url: &str) -> Result<()> {
         let campaign = &cat::Campaign.as_simple();
         let liquid_chromatography_document = &allores::AFR_0002524.as_simple();
 
@@ -49,6 +47,8 @@ impl GraphBuilder {
         if triples.is_empty() {
             println!("Warning: No triples found for contentURL insertion.");
             return Ok(());
+        } else if triples.len() > 1 {
+            return Err(anyhow::anyhow!("Multiple triples found for contentURL insertion"));
         }
 
         // return error if more than one triple is found
@@ -66,20 +66,14 @@ impl GraphBuilder {
                 self.graph.insert(
                     IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
                     schema::contentURL.as_simple(),
-                    content_url
-                        .to_str()
-                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
-                        .as_simple(),
+                    content_url.as_simple(),
                 )?;
             }
             SimpleTerm::BlankNode(subject_bnode) => {
                 self.graph.insert(
                     subject_bnode.clone(),
                     schema::contentURL.as_simple(),
-                    content_url
-                        .to_str()
-                        .ok_or_else(|| anyhow::anyhow!("Invalid UTF-8 in path"))?
-                        .as_simple(),
+                    content_url.as_simple(),
                 )?;
             }
             _ => {

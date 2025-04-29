@@ -1,37 +1,25 @@
 use catplus_common::{
-    graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph},
     models::agilent::LiquidChromatographyAggregateDocumentWrapper,
     rdf::rdf_parser::parse_turtle_to_graph,
 };
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
-use std::path::Path;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_materialize_blank_nodes() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent/blank_nodes.json");
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        true,
-    );
-    //println!("{}", result.unwrap());
+    let mut config = get_test_config("data/tests/agilent_blank_nodes.json");
+    config.materialize = true;
+    let _ = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
 }
 
 #[test]
 fn test_convert_liquid_chromatography() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data =
-        project_root.join("data/tests/agilent/liquid_chromatography_aggregate_document.json");
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        false,
-    );
-    println!("{:?}", result);
+    let config =
+        get_test_config("data/tests/agilent_liquid_chromatography_aggregate_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
 
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -155,7 +143,8 @@ fn test_convert_liquid_chromatography() {
                             qudt:value "1.68996"^^xsd:double];
                         allores:AFR_0001181 [ a cat:Measurement;
                             qudt:unit qudtext:MilliAbsorbanceUnit;
-                            qudt:value "-183.143"^^xsd:double]]]]]].
+                            qudt:value "-183.143"^^xsd:double]]]]]];
+                        schema:contentURL "http://example.org/test/../../data/tests/agilent_liquid_chromatography_aggregate_document.json".
 
       "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
@@ -167,14 +156,8 @@ fn test_convert_liquid_chromatography() {
 
 #[test]
 fn test_convert_device_system_document() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/agilent/device_system_document.json");
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data.as_path(),
-        &output_format,
-        false,
-    );
+    let config = get_test_config("data/tests/agilent_device_system_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -212,7 +195,8 @@ fn test_convert_device_system_document() {
             allores:AFR_0001259 "D.07.38 [0003]";
             allores:AFR_0002018 "Sampler";
             allores:AFR_0002568 "Autosampler";
-            obo:IAO_0000017 "G7167A"]].
+            obo:IAO_0000017 "G7167A"]];
+        schema:contentURL "http://example.org/test/../../data/tests/agilent_device_system_document.json".
 
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();

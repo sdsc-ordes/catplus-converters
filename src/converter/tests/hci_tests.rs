@@ -1,14 +1,14 @@
 use catplus_common::{models::hci::CampaignWrapper, rdf::rdf_parser::parse_turtle_to_graph};
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
-use std::path::Path;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_convert_campaign() {
-    let output_format = RdfFormat::Turtle;
-    let project_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
-    let json_data = project_root.join("data/tests/hci/campaign.json");
-    let result = json_to_rdf::<CampaignWrapper>(json_data.as_path(), &output_format, false);
+    let config = get_test_config("data/tests/hci_campaign.json");
+    let result = json_to_rdf::<CampaignWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -108,7 +108,8 @@ fn test_convert_campaign() {
             schema:name "Maximize caffeine formation"];
         allores:AFR_0002764 "Substitution reaction - SN2";
         schema:description "1-step N-methylation of theobromine to caffeine";
-        schema:name "Caffeine Synthesis".
+        schema:name "Caffeine Synthesis";
+        schema:contentURL "http://example.org/test/../../data/tests/hci_campaign.json".
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
     let result_ttl = result.as_ref().unwrap().as_str();
