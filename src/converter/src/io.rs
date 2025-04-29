@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::{
     fs::File,
-    io::Write,
+    io::{Read, Write},
     path::{Path, PathBuf},
 };
 
@@ -29,6 +29,15 @@ impl RdfFormatExt for RdfFormat {
     }
 }
 
+pub(crate) fn read_to_string(path: &Path) -> Result<String> {
+    let mut content = String::new();
+    File::open(path)
+        .with_context(|| format!("Failed to open file '{}'.", path.display()))?
+        .read_to_string(&mut content)
+        .with_context(|| format!("Failed to read file '{}'.", path.display()))?;
+    Ok(content)
+}
+
 fn detect_input_type(filename: &str) -> Option<InputType> {
     let lowercase = filename.to_lowercase();
     if lowercase.contains("synth") {
@@ -37,6 +46,8 @@ fn detect_input_type(filename: &str) -> Option<InputType> {
         Some(InputType::HCI)
     } else if lowercase.contains("agilent") {
         Some(InputType::Agilent)
+    } else if lowercase.contains("bravo") {
+        Some(InputType::Bravo)
     } else {
         None
     }
@@ -85,19 +96,20 @@ pub fn save_output(
     Ok(())
 }
 
-pub fn define_output_folder(input_path: &Path, user_specified: &Option<String>) -> Result<PathBuf> {
+/// Defines a fallback output folder based on input file in case  it is missing.
+pub fn define_output_folder(
+    input_path: &PathBuf,
+    provided_output_folder: &Option<PathBuf>,
+) -> Result<PathBuf> {
     let default_output_folder = if input_path.is_file() {
-        input_path
-            .parent()
-            .map(Path::to_path_buf)
-            .context("Failed to get parent folder of input file")?
+        input_path.parent().context("Failed to get parent folder of input file")?
     } else {
-        input_path.to_path_buf()
+        input_path
     };
 
-    let output_folder = match user_specified {
+    let output_folder = match provided_output_folder {
         Some(folder) => PathBuf::from(folder),
-        None => default_output_folder,
+        _ => default_output_folder.to_path_buf(),
     };
 
     Ok(output_folder)

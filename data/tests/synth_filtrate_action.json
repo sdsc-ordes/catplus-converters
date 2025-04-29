@@ -1,0 +1,15 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "filtrateAction",
+            "startTime": "2024-07-25T12:15:23",
+            "endingTime": "2024-07-25T12:16:50",
+            "methodName": "filtrate",
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "Filtration unit",
+            "containerID": "1",
+            "containerBarcode": "1"
+        }
+    ]
+}

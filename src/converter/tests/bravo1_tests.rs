@@ -1,63 +1,14 @@
 use catplus_common::{models::bravo::BravoActionWrapper, rdf::rdf_parser::parse_turtle_to_graph};
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_convert_bravo1_add_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "AddAction",
-                    "methodName": "DilutionAddAction",
-                    "equipmentName": "Micropipette",
-                    "startTime": "2024-07-25T12:02:39",
-                    "endingTime": "2024-07-25T12:02:41",
-                    "dispenseState": "Liquid",
-                    "dispenseType": "volume",
-                    "productIdentification":{
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "hasWell": {
-                        "containerID": "157",
-                        "containerBarcode": "1234858858754848",
-                        "position": "A1"
-                    },
-                    "hasSolvent": {
-                        "hasChemical": {
-                            "chemicalID": "14",
-                            "chemicalName": "Water",
-                            "CASNumber": "7732-18-5",
-                            "molecularMass": {
-                                "value": 18.015,
-                                "unit": "g/mol"
-                            },
-                            "smiles": "O",
-                            "swissCatNumber": "SwissCAT-962",
-                            "Inchi": "1S/H2O/h1H2",
-                            "molecularFormula": "H2O",
-                            "density": {
-                                "value": 1.000,
-                                "unit": "g/mL"
-                            }
-                        },
-                        "volume": {
-                            "value": 0.5,
-                            "unit": "mL",
-                            "errorMargin": {
-                                "value": 0.01,
-                                "unit": "mL"
-                            }
-                        }
-                    },
-                    "order": "2"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo1_add_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -121,44 +72,8 @@ fn test_convert_bravo1_add_action() {
 
 #[test]
 fn test_convert_bravo1_evaporation_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "EvaporationAction",
-                    "methodName": "Evaporate",
-                    "equipmentName": "Evaporator",
-                    "subEquipmentName": "item-1",
-                    "volumeEvaporationFinal": {
-                        "value": 50,
-                        "unit": "%"
-                    },
-                    "startTime": "2024-07-25T12:03:31",
-                    "endingTime": "2024-07-25T12:15:20",
-                    "atWell": {
-                        "containerID": "157",
-                        "containerBarcode": "1234858858754848",
-                        "position": "A1"
-                    },
-                    "productIdentification":{
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "temperature": {
-                        "value": 156,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "°C"
-                        }
-                    },
-                    "order": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo1_evaporation_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -214,72 +129,8 @@ fn test_convert_bravo1_evaporation_action() {
 
 #[test]
 fn test_convert_bravo1_solvent_change_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "solventChangeAction",
-                    "methodName": "separation-cartridge-part-1",
-                    "equipmentName": "SPE",
-                    "subEquipmentName": "cartridge exchange",
-                    "startTime": "2024-07-25T12:03:31",
-                    "endingTime": "2024-07-25T12:15:20",
-                    "SPMEprocess": true,
-                    "productIdentification":{
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "hasWell": {
-                        "containerID": "157",
-                        "containerBarcode": "1234858858754848",
-                        "position": "A1"
-                    },
-                    "hasCartridge": {
-                        "cartridgeName": "test-cartridge",
-                        "cartridgeComposition": "test-material"
-                    },
-                    "startDuration": {
-                        "value": 0,
-                        "unit": "min"
-                    },
-                    "endingDuration": {
-                        "value": 1,
-                        "unit": "min"
-                    },
-                    "hasSolvent": {
-                        "hasChemical": {
-                            "chemicalID": "25",
-                            "chemicalName": "Acetonitrile",
-                            "CASNumber": "75-05-8",
-                            "molecularMass": {
-                                "value": 41.05,
-                                "unit": "g/mol"
-                            },
-                            "smiles": "CC#N",
-                            "swissCatNumber": "SwissCAT-6342",
-                            "Inchi": "1S/C2H3N/c1-2-3/h1H3",
-                            "molecularFormula": "C2H3N",
-                            "density": {
-                                "value": 0.787,
-                                "unit": "g/mL"
-                            }
-                        },
-                        "volume": {
-                            "value": 50,
-                            "unit": "uL",
-                            "errorMargin": {
-                                "value": 0.5,
-                                "unit": "uL"
-                            }
-                        }
-                    },
-                    "order": "3"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo1_solvent_change_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

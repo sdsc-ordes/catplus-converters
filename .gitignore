@@ -18,5 +18,4 @@ result
 .DS_Store
 
 #Folders
-data/**
 *.ttl

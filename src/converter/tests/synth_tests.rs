@@ -1,28 +1,14 @@
 use catplus_common::{models::synth::SynthBatch, rdf::rdf_parser::parse_turtle_to_graph};
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_convert_filtrate_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "batchID": "23",
-            "Actions": [
-                {
-                    "actionName": "filtrateAction",
-                    "startTime": "2024-07-25T12:15:23",
-                    "endingTime": "2024-07-25T12:16:50",
-                    "methodName": "filtrate",
-                    "equipmentName": "Chemspeed SWING XL",
-                    "subEquipmentName": "Filtration unit",
-                    "containerID": "1",
-                    "containerBarcode": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_filtrate_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -65,33 +51,8 @@ fn test_convert_filtrate_action() {
 
 #[test]
 fn test_convert_pressure_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "batchID": "23",
-            "Actions": [
-                {
-                    "actionName": "setPressureAction",
-                    "pressureMeasurement": {
-                        "value": 5,
-                        "unit": "bar",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "bar"
-                        }
-                    },
-                    "startTime": "2024-07-25T12:03:50",
-                    "endingTime": "2024-07-25T12:04:05",
-                    "methodName": "set_pressure",
-                    "equipmentName": "Chemspeed SWING XL",
-                    "subEquipmentName": "MTP_Pressure",
-                    "containerID": "1",
-                    "containerBarcode": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_set_pressure_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -140,49 +101,8 @@ fn test_convert_pressure_action() {
 
 #[test]
 fn test_convert_set_temperature_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "batchID": "23",
-            "Actions": [
-                {
-                    "actionName": "setTemperatureAction",
-                    "speedShaker": {
-                        "value": 152,
-                        "unit": "rpm",
-                        "errorMargin": {
-                            "value": 5,
-                            "unit": "rpm"
-                        }
-                    },
-                    "temperatureTumbleStirrer": {
-                        "value": 25,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 2,
-                            "unit": "°C"
-                        }
-                    },
-                    "temperatureShaker": {
-                        "value": 25,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "°C"
-                        }
-                    },
-                    "startTime": "2024-07-25T12:00:00",
-                    "endingTime": "2024-07-25T12:00:02",
-                    "methodName": "set_temperature",
-                    "equipmentName": "Chemspeed SWING XL",
-                    "subEquipmentName": "heater",
-                    "containerID": "1",
-                    "containerBarcode": "1"
-                    }
-                ]
-            }
-        "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_set_temperature_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -243,106 +163,8 @@ fn test_convert_set_temperature_action() {
 
 #[test]
 fn test_convert_add_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-    {
-        "batchID": "23",
-        "Actions": [
-            {
-                "actionName": "AddAction",
-                "speedShaker": {
-                    "value": 152,
-                    "unit": "rpm",
-                    "errorMargin": {
-                        "value": 1,
-                        "unit": "rpm"
-                    }
-                },
-                "equipmentName": "Chemspeed SWING XL",
-                "subEquipmentName": "GDU-V",
-                "hasWell": [
-                    {
-                        "position": "A1",
-                        "containerID": "1",
-                        "quantity": {
-                            "value": 0.024,
-                            "unit": "mg",
-                            "errorMargin": {
-                                "value": 0.001,
-                                "unit": "mg"
-                            }
-                        }
-                    },
-                    {
-                        "position": "B1",
-                        "containerID": "1",
-                        "quantity": {
-                            "value": 0.034,
-                            "unit": "mg",
-                            "errorMargin": {
-                                "value": 0.002,
-                                "unit": "mg"
-                            }
-                        }
-                    }
-                ],
-                "startTime": "2024-07-25T12:01:29",
-                "endingTime": "2024-07-25T12:01:35",
-                "methodName": "addition",
-                "dispenseState": "Liquid",
-                "dispenseType": "volume",
-                "hasSample": {
-                    "expectedDatum": {
-                        "value": 2,
-                        "unit": "mg"
-                    },
-                    "containerID": "18",
-                    "containerBarcode": "18",
-                    "vialID": "17",
-                    "vialType": "storage vial",
-                    "role": "reagent",
-                    "hasSample": [
-                        {
-                            "sampleID": "124",
-                            "role": "reagent",
-                            "internalBarCode": "2",
-                            "expectedDatum": {
-                                "value": 5,
-                                "unit": "mg"
-                            },
-                            "measuredQuantity": {
-                                "value": 1,
-                                "unit": "mg",
-                                "errorMargin": {
-                                    "value": 0.001,
-                                    "unit": "mg"
-                                }
-                            },
-                            "physicalState": "Liquid",
-                            "hasChemical": {
-                                "chemicalID": "134",
-                                "chemicalName": "4-methoxybenzaldehyde",
-                                "CASNumber": "123-11-5",
-                                "molecularMass": {
-                                    "value": 136.15,
-                                    "unit": "g/mol"
-                                },
-                                "smiles": "COC1=CC=C(C=C1)C=O",
-                                "Inchi": "1S/C8H8O2/c1-10-8-4-2-7(6-9)3-5-8/h2-6H,1H3",
-                                "molecularFormula": "C8H8O2",
-                                "density": {
-                                    "value": 1.119,
-                                    "unit": "g/mL"
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
-    }
-    "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_add_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -494,49 +316,8 @@ fn test_convert_add_action() {
 
 #[test]
 fn test_convert_shake_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "batchID": "23",
-            "Actions": [
-                {
-                    "actionName": "shakeAction",
-                    "speedTumbleStirrer": {
-                        "value": 600,
-                        "unit": "rpm",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "rpm"
-                        }
-                    },
-                    "startTime": "2024-07-25T12:03:31",
-                    "endingTime": "2024-07-25T12:15:20",
-                    "methodName": "shake",
-                    "temperatureTumbleStirrer": {
-                        "value": 25,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "°C"
-                        }
-                    },
-                    "temperatureShaker": {
-                        "value": 25,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 2,
-                            "unit": "°C"
-                        }
-                    },
-                    "equipmentName": "Chemspeed SWING XL",
-                    "subEquipmentName": "Tumble Stirrer",
-                    "containerID": "1",
-                    "containerBarcode": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_shake_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -597,33 +378,8 @@ fn test_convert_shake_action() {
 
 #[test]
 fn test_convert_set_vacuum_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "batchID": "23",
-            "Actions": [
-                {
-                    "actionName": "setVacuumAction",
-                    "vacuum": {
-                        "value": 20,
-                        "unit": "bar",
-                        "errorMargin": {
-                            "value": 0.5,
-                            "unit": "bar"
-                        }
-                    },
-                    "startTime": "2024-07-25T12:03:41",
-                    "endingTime": "2024-07-25T12:03:50",
-                    "methodName": "set_vacuum",
-                    "equipmentName": "Chemspeed SWING XL",
-                    "subEquipmentName": "vacuum",
-                    "containerID": "1",
-                    "containerBarcode": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<SynthBatch>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/synth_set_vacuum_action.json");
+    let result = json_to_rdf::<SynthBatch>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

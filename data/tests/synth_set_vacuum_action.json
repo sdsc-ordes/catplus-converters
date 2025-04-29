@@ -1,0 +1,23 @@
+{
+    "batchID": "23",
+    "Actions": [
+        {
+            "actionName": "setVacuumAction",
+            "vacuum": {
+                "value": 20,
+                "unit": "bar",
+                "errorMargin": {
+                    "value": 0.5,
+                    "unit": "bar"
+                }
+            },
+            "startTime": "2024-07-25T12:03:41",
+            "endingTime": "2024-07-25T12:03:50",
+            "methodName": "set_vacuum",
+            "equipmentName": "Chemspeed SWING XL",
+            "subEquipmentName": "vacuum",
+            "containerID": "1",
+            "containerBarcode": "1"
+        }
+    ]
+}

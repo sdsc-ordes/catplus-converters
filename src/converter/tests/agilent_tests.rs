@@ -2,237 +2,24 @@ use catplus_common::{
     models::agilent::LiquidChromatographyAggregateDocumentWrapper,
     rdf::rdf_parser::parse_turtle_to_graph,
 };
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_materialize_blank_nodes() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-    {
-        "liquid chromatography aggregate document": {
-            "liquid chromatography document": [
-                {
-                    "analyst": "Swisscat (swisscat)",
-                    "measurement aggregate document": {
-                        "measurement document": []
-                    }
-                }
-            ]
-        }
-    }
-    "#;
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data,
-        &output_format,
-        true,
-    );
-    println!("{}", result.unwrap());
+    let mut config = get_test_config("data/tests/agilent_blank_nodes.json");
+    config.materialize = true;
+    let _ = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
 }
 
 #[test]
 fn test_convert_liquid_chromatography() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-    {
-        "liquid chromatography aggregate document": {
-            "liquid chromatography document": [
-                {
-                    "analyst": "Swisscat (swisscat)",
-                    "measurement aggregate document": {
-                        "measurement document": [
-                            {
-                                "measurement identifier": "DAD1A",
-                                "chromatography column document": "temporary",
-                                "device control aggregate document": {
-                                    "device control document": [
-                                        {
-                                            "device identifier": "",
-                                            "device type": "Diode array uv detector",
-                                            "product manufacturer": "Agilent",
-                                            "equipment serial number": "DEAC617961",
-                                            "model number": "G7115A",
-                                            "firmware version": "D.07.38 [0001]",
-                                            "detection type": "single channel"
-                                        }
-                                    ]
-                                },
-                                "sample document": {
-                                    "sample identifier": "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9",
-                                    "written name": "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"
-                                },
-                                "injection document": {
-                                    "autosampler injection volume setting (chromatography)": {
-                                        "value": 5,
-                                        "unit": "mm^3"
-                                    },
-                                    "injection identifier": "2024-04-12 10-23-04+02-00-20.dx",
-                                    "injection time": "2024-04-12T08:23:47.113+00:00"
-                                },
-                                "detection type": "single channel",
-                                "chromatogram data cube": {
-                                    "label": "DAD1A,Sig=215,4  Ref=off",
-                                    "cube-structure": {
-                                        "dimensions": [
-                                            {
-                                                "@componentDatatype": "double",
-                                                "concept": "retention time",
-                                                "unit": "s"
-                                            }
-                                        ],
-                                        "measures": [
-                                            {
-                                                "@componentDatatype": "double",
-                                                "concept": "absorbance",
-                                                "unit": "mAU"
-                                            }
-                                        ]
-                                    },
-                                    "data": {
-                                        "measures": [
-                                            [
-                                                
-                                                -0.870228
-                                            ]
-                                        ],
-                                        "dimensions": [
-                                            [
-                                                0.2
-                                            
-                                            ]
-                                        ]
-                                    },
-                                    "identifier": "DAD1A"
-                                },
-                                "processed data document": {
-                                    "peak list": {
-                                        "peak": [
-                                            {
-                                                "@index": 1,
-                                                "peak area": {
-                                                    "value": 34034.5,
-                                                    "unit": "mAU.s"
-                                                },
-                                                "retention time": {
-                                                    "value": 1.19008,
-                                                    "unit": "min"
-                                                },
-                                                "identifier": "f81b4bcb-4d4a-41c7-8b34-5610e940d3ca",
-                                                "peak end": {
-                                                    "value": 1.68996,
-                                                    "unit": "min"
-                                                },
-                                                "relative peak height": {
-                                                    "value": 100,
-                                                    "unit": "%"
-                                                },
-                                                "peak height": {
-                                                    "value": 3058.31,
-                                                    "unit": "mAU"
-                                                },
-                                                "peak start": {
-                                                    "value": 0.984987,
-                                                    "unit": "min"
-                                                },
-                                                "relative peak area": {
-                                                    "value": 100,
-                                                    "unit": "%"
-                                                },
-                                                "peak value at start": {
-                                                    "value": -169.679,
-                                                    "unit": "mAU"
-                                                },
-                                                "peak value at end": {
-                                                    "value": -183.143,
-                                                    "unit": "mAU"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            },
-                            {
-                                "measurement identifier": "DAD1B",
-                                "chromatography column document": {},
-                                "device control aggregate document": {
-                                    "device control document": [
-                                        {
-                                            "device identifier": "",
-                                            "device type": "Diode array uv detector",
-                                            "product manufacturer": "Agilent",
-                                            "equipment serial number": "DEAC617961",
-                                            "model number": "G7115A",
-                                            "firmware version": "D.07.38 [0001]",
-                                            "detection type": "single channel"
-                                        }
-                                    ]
-                                },
-                                "sample document": {
-                                    "sample identifier": "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9",
-                                    "written name": "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"
-                                },
-                                "injection document": {
-                                    "autosampler injection volume setting (chromatography)": {
-                                        "value": 5,
-                                        "unit": "mm^3"
-                                    },
-                                    "injection identifier": "2024-04-12 10-23-04+02-00-20.dx",
-                                    "injection time": "2024-04-12T08:23:47.113+00:00"
-                                },
-                                "detection type": "single channel",
-                                "chromatogram data cube": {
-                                    "label": "DAD1B,Sig=254,4  Ref=off",
-                                    "cube-structure": {
-                                        "dimensions": [
-                                            {
-                                                "@componentDatatype": "double",
-                                                "concept": "retention time",
-                                                "unit": "s"
-                                            }
-                                        ],
-                                        "measures": [
-                                            {
-                                                "@componentDatatype": "double",
-                                                "concept": "absorbance",
-                                                "unit": "mAU"
-                                            }
-                                        ]
-                                    },
-                                    "data": {
-                                        "measures": [
-                                            [
-                                                0.130653
-                                                
-                                            ]
-                                        ],
-                                        "dimensions": [
-                                            [
-                                                0.2
-                                                
-                                            ]
-                                        ]
-                                    },
-                                    "identifier": "DAD1B"
-                                },
-                                "processed data document": {
-                                    "peak list": {
-                                        "peak": []
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    }
-    "#;
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data,
-        &output_format,
-        false,
-    );
-    println!("{:?}", result);
+    let config =
+        get_test_config("data/tests/agilent_liquid_chromatography_aggregate_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
 
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -356,7 +143,8 @@ fn test_convert_liquid_chromatography() {
                             qudt:value "1.68996"^^xsd:double];
                         allores:AFR_0001181 [ a cat:Measurement;
                             qudt:unit qudtext:MilliAbsorbanceUnit;
-                            qudt:value "-183.143"^^xsd:double]]]]]].
+                            qudt:value "-183.143"^^xsd:double]]]]]];
+                        schema:contentURL "http://example.org/test/../../data/tests/agilent_liquid_chromatography_aggregate_document.json".
 
       "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
@@ -368,41 +156,8 @@ fn test_convert_liquid_chromatography() {
 
 #[test]
 fn test_convert_device_system_document() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-    {
-    "liquid chromatography aggregate document": {
-        "device system document": {
-            "asset management identifier": "a7155146-e1d0-41be-99bf-eb2e55f9766e",
-            "device document": [
-                {
-                    "device identifier": "LC Pump",
-                    "device type": "Pump",
-                    "model number": "G7104C",
-                    "product manufacturer": "Agilent",
-                    "equipment serial number": "DEAGZ02881",
-                    "firmware version": "B.07.38 [0003]",
-                    "@index": 1
-                },
-                {
-                    "device identifier": "Sampler",
-                    "device type": "Autosampler",
-                    "model number": "G7167A",
-                    "product manufacturer": "Agilent",
-                    "equipment serial number": "DEAGW00219",
-                    "firmware version": "D.07.38 [0003]",
-                    "@index": 2
-                }
-            ]
-            }
-        }
-    }
-    "#;
-    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(
-        json_data,
-        &output_format,
-        false,
-    );
+    let config = get_test_config("data/tests/agilent_device_system_document.json");
+    let result = json_to_rdf::<LiquidChromatographyAggregateDocumentWrapper>(&config);
     let expected_ttl = r#"
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -440,7 +195,8 @@ fn test_convert_device_system_document() {
             allores:AFR_0001259 "D.07.38 [0003]";
             allores:AFR_0002018 "Sampler";
             allores:AFR_0002568 "Autosampler";
-            obo:IAO_0000017 "G7167A"]].
+            obo:IAO_0000017 "G7167A"]];
+        schema:contentURL "http://example.org/test/../../data/tests/agilent_device_system_document.json".
 
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();

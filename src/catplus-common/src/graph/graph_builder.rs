@@ -1,4 +1,7 @@
-use crate::rdf::rdf_serializers::{serialize_graph_to_jsonld, serialize_graph_to_turtle};
+use crate::{
+    graph::namespaces::{allores, cat, schema},
+    rdf::rdf_serializers::{serialize_graph_to_jsonld, serialize_graph_to_turtle},
+};
 use anyhow::{Context, Result};
 use sophia::inmem::graph::LightGraph;
 use sophia_api::{prelude::*, term::SimpleTerm};
@@ -25,6 +28,60 @@ impl GraphBuilder {
     /// Inserts a new object into the graph as a collection of triples.
     pub fn insert(&mut self, other: &dyn InsertIntoGraph) -> Result<()> {
         other.insert_into(&mut self.graph, other.get_uri())?;
+
+        Ok(())
+    }
+
+    /// Adds a content URL to the graph.
+    pub fn link_content(&mut self, content_url: &str) -> Result<()> {
+        let campaign = &cat::Campaign.as_simple();
+        let liquid_chromatography_document = &allores::AFR_0002524.as_simple();
+
+        let triples = self
+            .graph
+            .triples_matching(Any, Any, [campaign, liquid_chromatography_document])
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(anyhow::Error::from)?;
+
+        // exit with warning if no triples are found.
+        if triples.is_empty() {
+            println!("Warning: No triples found for contentURL insertion.");
+            return Ok(());
+        } else if triples.len() > 1 {
+            return Err(anyhow::anyhow!("Multiple triples found for contentURL insertion"));
+        }
+
+        // return error if more than one triple is found
+        if triples.len() > 1 {
+            return Err(anyhow::anyhow!(
+                "Multiple triples found for contentURL insertion. There should only be one."
+            ));
+        }
+
+        let triple = triples.into_iter().next().unwrap();
+        let [subject, _, _] = triple;
+
+        match subject {
+            SimpleTerm::Iri(subject_iri) => {
+                self.graph.insert(
+                    IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
+                    schema::contentURL.as_simple(),
+                    content_url.as_simple(),
+                )?;
+            }
+            SimpleTerm::BlankNode(subject_bnode) => {
+                self.graph.insert(
+                    subject_bnode.clone(),
+                    schema::contentURL.as_simple(),
+                    content_url.as_simple(),
+                )?;
+            }
+            _ => {
+                return Err(anyhow::anyhow!(
+                    "Subject must be either an IRI or a BlankNode to add contentURL"
+                ));
+            }
+        }
 
         Ok(())
     }

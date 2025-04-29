@@ -1,63 +1,14 @@
 use catplus_common::{models::bravo::BravoActionWrapper, rdf::rdf_parser::parse_turtle_to_graph};
-use converter::convert::{json_to_rdf, RdfFormat};
+use converter::convert::json_to_rdf;
 use sophia_isomorphism::isomorphic_graphs;
+
+mod common;
+use common::get_test_config;
 
 #[test]
 fn test_convert_bravo2_add_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "AddAction",
-                    "methodName": "DissolutionAddAction",
-                    "equipmentName": "Micropipette",
-                    "startTime": "2024-07-25T12:02:39",
-                    "endingTime": "2024-07-25T12:02:41",
-                    "dispenseState": "Liquid",
-                    "dispenseType": "volume",
-                    "productIdentification": {
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "hasWell": {
-                        "containerID": "157",
-                        "containerBarcode": "1234858858754848",
-                        "position": "A1"
-                    },
-                    "hasSolvent": {
-                        "hasChemical": {
-                            "chemicalID": "25",
-                            "chemicalName": "Tetradeuteromethanol",
-                            "CASNumber": "811-98-3",
-                            "molecularMass": {
-                                "value": 36.07,
-                                "unit": "g/mol"
-                            },
-                            "smiles": "[2H]C([2H])([2H])O[2H]",
-                            "swissCatNumber": "SwissCAT-71568",
-                            "Inchi": "1S/CH4O/c1-2/h2H,1H3/i1D3,2D",
-                            "molecularFormula": "CH4O",
-                            "density": {
-                                "value": 0.89,
-                                "unit": "g/mL"
-                            }
-                        },
-                        "volume": {
-                            "value": 0.2,
-                            "unit": "mL",
-                            "errorMargin": {
-                                "value": 0.01,
-                                "unit": "mL"
-                            }
-                        }
-                    },
-                    "order": "3"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo2_add_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -121,44 +72,8 @@ fn test_convert_bravo2_add_action() {
 
 #[test]
 fn test_convert_bravo2_evaporation_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "EvaporationAction",
-                    "methodName": "Evaporate",
-                    "equipmentName": "Evaporator",
-                    "subEquipmentName": "item-1",
-                    "volumeEvaporationFinal": {
-                        "value": 100,
-                        "unit": "%"
-                    },
-                    "startTime": "2024-07-25T12:03:31",
-                    "endingTime": "2024-07-25T12:15:20",
-                    "productIdentification": {
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "hasWell": {
-                        "containerID": "157",
-                        "containerBarcode": "1234858858754848",
-                        "position": "A1"
-                    },
-                    "temperature": {
-                        "value": 156,
-                        "unit": "°C",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "°C"
-                        }
-                    },
-                    "order": "1"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo2_evaporation_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -209,37 +124,8 @@ fn test_convert_bravo2_evaporation_action() {
 
 #[test]
 fn test_convert_bravo2_shake_action() {
-    let output_format = RdfFormat::Turtle;
-    let json_data = r#"
-        {
-            "Actions": [
-                {
-                    "actionName": "shakeAction",
-                    "methodName": "shake",
-                    "equipmentName": "magneticStirrer",
-                    "subEquipmentName": "item-1",
-                    "startTime": "2024-07-25T12:03:31",
-                    "endingTime": "2024-07-25T12:15:20",
-                    "containerID": "157",
-                    "containerBarcode": "1234858858754848",
-                    "productIdentification": {
-                        "sampleID": "1-A1",
-                        "peakIdentifier": "511359d7-df0d-4018-bfee-ff58585b5809"
-                    },
-                    "speedShaker": {
-                        "value": 152,
-                        "unit": "rpm",
-                        "errorMargin": {
-                            "value": 1,
-                            "unit": "rpm"
-                        }
-                    },
-                    "order": "5"
-                }
-            ]
-        }
-    "#;
-    let result = json_to_rdf::<BravoActionWrapper>(json_data, &output_format, false);
+    let config = get_test_config("data/tests/bravo2_shake_action.json");
+    let result = json_to_rdf::<BravoActionWrapper>(&config);
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
