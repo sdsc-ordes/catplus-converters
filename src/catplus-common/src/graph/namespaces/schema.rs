@@ -3,7 +3,7 @@ use sophia::api::ns::Namespace;
 use sophia_api::namespace;
 namespace! {
     "https://schema.org/",
-    contentURL,
+    contentUrl,
     description,
     keywords,
     name
