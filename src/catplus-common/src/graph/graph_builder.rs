@@ -45,16 +45,16 @@ impl GraphBuilder {
 
         // exit with warning if no triples are found.
         if triples.is_empty() {
-            println!("Warning: No triples found for contentURL insertion.");
+            println!("Warning: No triples found for contentUrl insertion.");
             return Ok(());
         } else if triples.len() > 1 {
-            return Err(anyhow::anyhow!("Multiple triples found for contentURL insertion"));
+            return Err(anyhow::anyhow!("Multiple triples found for contentUrl insertion"));
         }
 
         // return error if more than one triple is found
         if triples.len() > 1 {
             return Err(anyhow::anyhow!(
-                "Multiple triples found for contentURL insertion. There should only be one."
+                "Multiple triples found for contentUrl insertion. There should only be one."
             ));
         }
 
@@ -65,20 +65,20 @@ impl GraphBuilder {
             SimpleTerm::Iri(subject_iri) => {
                 self.graph.insert(
                     IriRef::new(subject_iri.as_str().to_owned()).unwrap(),
-                    schema::contentURL.as_simple(),
+                    schema::contentUrl.as_simple(),
                     content_url.as_simple(),
                 )?;
             }
             SimpleTerm::BlankNode(subject_bnode) => {
                 self.graph.insert(
                     subject_bnode.clone(),
-                    schema::contentURL.as_simple(),
+                    schema::contentUrl.as_simple(),
                     content_url.as_simple(),
                 )?;
             }
             _ => {
                 return Err(anyhow::anyhow!(
-                    "Subject must be either an IRI or a BlankNode to add contentURL"
+                    "Subject must be either an IRI or a BlankNode to add contentUrl"
                 ));
             }
         }

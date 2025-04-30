@@ -109,7 +109,7 @@ fn test_convert_campaign() {
         allores:AFR_0002764 "Substitution reaction - SN2";
         schema:description "1-step N-methylation of theobromine to caffeine";
         schema:name "Caffeine Synthesis";
-        schema:contentURL "http://example.org/test/../../data/tests/hci_campaign.json".
+        schema:contentUrl "http://example.org/test/../../data/tests/hci_campaign.json".
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
     let result_ttl = result.as_ref().unwrap().as_str();

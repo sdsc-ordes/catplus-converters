@@ -144,7 +144,7 @@ fn test_convert_liquid_chromatography() {
                         allores:AFR_0001181 [ a cat:Measurement;
                             qudt:unit qudtext:MilliAbsorbanceUnit;
                             qudt:value "-183.143"^^xsd:double]]]]]];
-                        schema:contentURL "http://example.org/test/../../data/tests/agilent_liquid_chromatography_aggregate_document.json".
+                        schema:contentUrl "http://example.org/test/../../data/tests/agilent_liquid_chromatography_aggregate_document.json".
 
       "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
@@ -196,7 +196,7 @@ fn test_convert_device_system_document() {
             allores:AFR_0002018 "Sampler";
             allores:AFR_0002568 "Autosampler";
             obo:IAO_0000017 "G7167A"]];
-        schema:contentURL "http://example.org/test/../../data/tests/agilent_device_system_document.json".
+        schema:contentUrl "http://example.org/test/../../data/tests/agilent_device_system_document.json".
 
     "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
