@@ -12,7 +12,7 @@ fn test_convert_filtrate_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -56,7 +56,7 @@ fn test_convert_pressure_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -106,7 +106,7 @@ fn test_convert_set_temperature_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -168,7 +168,7 @@ fn test_convert_add_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -321,7 +321,7 @@ fn test_convert_shake_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -383,7 +383,7 @@ fn test_convert_set_vacuum_action() {
     let expected_ttl = r#"
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX cat: <http://example.org/cat#>
+        PREFIX cat: <http://example.org/catplus/ontology/>
         PREFIX schema: <https://schema.org/>
         PREFIX unit: <http://qudt.org/vocab/unit/>
         PREFIX allores: <http://purl.allotrope.org/ontologies/result#>

@@ -24,7 +24,7 @@ fn test_convert_liquid_chromatography() {
 
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    PREFIX cat: <http://example.org/cat#>
+    PREFIX cat: <http://example.org/catplus/ontology/>
     PREFIX schema: <https://schema.org/>
     PREFIX unit: <http://qudt.org/vocab/unit/>
     PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -161,7 +161,7 @@ fn test_convert_device_system_document() {
     let expected_ttl = r#"
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    PREFIX cat: <http://example.org/cat#>
+    PREFIX cat: <http://example.org/catplus/ontology/>
     PREFIX schema: <https://schema.org/>
     PREFIX unit: <https://qudt.org/vocab/unit/>
     PREFIX allores: <http://purl.allotrope.org/ontologies/result#>
@@ -202,6 +202,7 @@ fn test_convert_device_system_document() {
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
     let result_ttl = result.as_ref().unwrap().as_str();
     let result_graph = parse_turtle_to_graph(&result_ttl).unwrap();
+    println!("Result Graph: {}", result_ttl);
     let graphs_match = isomorphic_graphs(&result_graph, &expected_graph);
     assert_eq!(graphs_match.unwrap(), true);
 }
