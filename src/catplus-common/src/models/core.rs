@@ -5,13 +5,13 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allores, cat, obo, purl, qudt, schema},
+        namespaces::{allores, cat, cat_resource, obo, purl, qudt, schema},
     },
     models::enums::Unit,
 };
 use anyhow;
 use serde::{Deserialize, Serialize};
-use sophia::{api::ns::rdf, inmem::graph::LightGraph};
+use sophia::{api::{ns::rdf, prelude::*}, inmem::graph::LightGraph};
 use sophia_api::term::{SimpleTerm, Term};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -110,6 +110,14 @@ pub struct Chemical {
 }
 
 impl InsertIntoGraph for Chemical {
+
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        // build URI based on self.batch_id
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&self.inchi);
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
+
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (prop, value) in [
             (rdf::type_, &obo::CHEBI_25367.as_simple() as &dyn InsertIntoGraph),
