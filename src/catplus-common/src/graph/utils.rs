@@ -15,9 +15,9 @@ pub fn generate_bnode_term() -> SimpleTerm<'static> {
 
 
 /// Hashes an arbitrary identifier string into a URL-safe base64-encoded string.
-pub(crate) fn hash_identifier(inchi: &str) -> String {
+pub(crate) fn hash_identifier(identifier: &str) -> String {
     let mut hasher = Sha256::new();
-    hasher.update(inchi.as_bytes());
+    hasher.update(identifier.as_bytes());
     let result = hasher.finalize();
     general_purpose::URL_SAFE_NO_PAD.encode(result)
 }
