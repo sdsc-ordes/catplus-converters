@@ -1,4 +1,4 @@
-name: format
+name: normal
 on:
   pull_request:
   push:
@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: extractions/setup-just@v3
 
       - uses: cachix/install-nix-action@v30
         with:
@@ -19,8 +21,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: check code formatting
-        run: |
-          nix develop \
-            ./tools/nix#default \
-            --accept-flake-config \
-            --command bash -c "just fmt --check"
+        run: just nix::develop just fmt --check
+
+      - name: run unit tests
+        run: just nix::develop just test
