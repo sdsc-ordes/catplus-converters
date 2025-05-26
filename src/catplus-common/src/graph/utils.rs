@@ -1,9 +1,9 @@
 use base64::{engine::general_purpose, Engine as _};
+use sha2::{Digest, Sha256};
 use sophia_api::{
     prelude::*,
     term::{bnode_id::BnodeId, SimpleTerm},
 };
-use sha2::{Sha256, Digest};
 use uuid::Uuid;
 
 pub fn generate_bnode_term() -> SimpleTerm<'static> {
@@ -12,7 +12,6 @@ pub fn generate_bnode_term() -> SimpleTerm<'static> {
 
     bnode.try_into_term().expect("Failed to convert BnodeId to SimpleTerm")
 }
-
 
 /// Hashes an arbitrary identifier string into a URL-safe base64-encoded string.
 pub(crate) fn hash_identifier(identifier: &str) -> String {

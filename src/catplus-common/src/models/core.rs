@@ -12,7 +12,10 @@ use crate::{
 };
 use anyhow;
 use serde::{Deserialize, Serialize};
-use sophia::{api::{ns::rdf, prelude::*}, inmem::graph::LightGraph};
+use sophia::{
+    api::{ns::rdf, prelude::*},
+    inmem::graph::LightGraph,
+};
 use sophia_api::term::{SimpleTerm, Term};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -111,7 +114,6 @@ pub struct Chemical {
 }
 
 impl InsertIntoGraph for Chemical {
-
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
         let mut uri = cat_resource::ns.clone().as_str().to_owned();

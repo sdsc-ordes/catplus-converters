@@ -16,8 +16,8 @@ use sophia::{
     inmem::graph::LightGraph,
 };
 use sophia_api::{
-    prelude::*,
     graph::MutableGraph,
+    prelude::*,
     term::{SimpleTerm, Term},
 };
 
@@ -32,7 +32,6 @@ pub struct SynthBatch {
 }
 
 impl InsertIntoGraph for SynthBatch {
-
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
         let mut uri = cat_resource::ns.clone().as_str().to_owned();

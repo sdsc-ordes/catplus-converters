@@ -1,9 +1,7 @@
 use crate::io::read_to_string;
 use anyhow::{Context, Result};
 use catplus_common::graph::{
-    namespaces::cat_resource,
-    graph_builder::GraphBuilder,
-    insert_into::InsertIntoGraph,
+    graph_builder::GraphBuilder, insert_into::InsertIntoGraph, namespaces::cat_resource,
 };
 use serde::{de::DeserializeOwned, Deserialize};
 use std::path::{Path, PathBuf};
