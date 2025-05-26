@@ -2,6 +2,7 @@ use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
         namespaces::{alloproc, alloprop, alloqual, allores, cat, cat_resource, purl, qudt},
+        utils::hash_identifier,
     },
     models::{
         core::{Chemical, Observation, Plate},
@@ -35,7 +36,7 @@ impl InsertIntoGraph for SynthBatch {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
         let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&self.batch_id);
+        uri.push_str(&hash_identifier(&self.batch_id));
         IriRef::new_unchecked(uri).try_into_term().unwrap()
     }
 

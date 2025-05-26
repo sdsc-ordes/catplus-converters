@@ -8,6 +8,7 @@ use crate::{
         namespaces::{allores, cat, cat_resource, obo, purl, qudt, schema},
     },
     models::enums::Unit,
+    graph::utils::hash_identifier,
 };
 use anyhow;
 use serde::{Deserialize, Serialize};
@@ -114,7 +115,7 @@ impl InsertIntoGraph for Chemical {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
         let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&self.inchi);
+        uri.push_str(&hash_identifier(&self.inchi));
         IriRef::new_unchecked(uri).try_into_term().unwrap()
     }
 
