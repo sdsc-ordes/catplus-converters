@@ -8,6 +8,7 @@ pub mod alloqual;
 pub mod allores;
 pub mod allorole;
 pub mod cat;
+pub mod cat_resource;
 pub mod obo;
 pub mod purl;
 pub mod qb;
