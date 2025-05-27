@@ -264,9 +264,7 @@ pub struct SampleDocument {
 
 impl InsertIntoGraph for SampleDocument {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
-        let product = AgilentProduct{
-            product_identifier: self.product_identifier.clone(),
-        };
+        let product = AgilentProduct { product_identifier: self.product_identifier.clone() };
         for (pred, value) in [
             (rdf::type_, &cat::SampleDocument.as_simple() as &dyn InsertIntoGraph),
             (cat::hasProduct, &product),
@@ -274,10 +272,7 @@ impl InsertIntoGraph for SampleDocument {
         ] {
             value.attach_into(
                 graph,
-                Link { 
-                    source_iri: iri.clone(), 
-                    pred: pred.as_simple(), 
-                    target_iri: None },
+                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
             )?;
         }
         Ok(())
