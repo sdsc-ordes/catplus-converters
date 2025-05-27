@@ -2,7 +2,7 @@ use lazy_static::lazy_static;
 use sophia::api::ns::Namespace;
 use sophia_api::namespace;
 namespace! {
-    "http://example.org/cat#",
+    "http://example.org/catplus/ontology/",
     AddAction,
     AutosamplerInjectionVolumeSetting,
     Batch,

@@ -1,7 +1,8 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, obo, purl, qb, qudt},
+        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, purl, qb, qudt},
+        utils::hash_identifier,
     },
     models::{core::PeakList, enums::Unit},
 };
@@ -10,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use sophia::{
     api::ns::{rdf, rdfs, xsd},
     inmem::graph::LightGraph,
+    iri::IriRef,
 };
 use sophia_api::term::{SimpleTerm, Term};
 
@@ -211,6 +213,13 @@ pub struct DeviceDocument {
 }
 
 impl InsertIntoGraph for DeviceDocument {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        // build URI based on self.device_identifier
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&hash_identifier(&self.device_identifier));
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
+
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &allores::AFR_0002567.as_simple() as &dyn InsertIntoGraph),

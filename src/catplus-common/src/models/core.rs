@@ -5,13 +5,17 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allores, cat, obo, purl, qudt, schema},
+        namespaces::{allores, cat, cat_resource, obo, purl, qudt, schema},
     },
     models::enums::Unit,
+    graph::utils::hash_identifier,
 };
 use anyhow;
 use serde::{Deserialize, Serialize};
-use sophia::{api::ns::rdf, inmem::graph::LightGraph};
+use sophia::{
+    api::{ns::rdf, prelude::*},
+    inmem::graph::LightGraph,
+};
 use sophia_api::term::{SimpleTerm, Term};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -110,6 +114,13 @@ pub struct Chemical {
 }
 
 impl InsertIntoGraph for Chemical {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        // build URI based on self.inchi
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&hash_identifier(&self.inchi));
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
+
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (prop, value) in [
             (rdf::type_, &obo::CHEBI_25367.as_simple() as &dyn InsertIntoGraph),
@@ -272,7 +283,6 @@ mod tests {
         let mut b = GraphBuilder::new();
         let i = IriRef::new_unchecked("http://test.com/my-observation");
         observation.insert_into(&mut b.graph, i.as_simple())?;
-        println!("Graph\n{}", b.serialize_to_turtle().unwrap());
 
         Ok(())
     }

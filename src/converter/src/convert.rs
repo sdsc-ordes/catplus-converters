@@ -1,6 +1,8 @@
 use crate::io::read_to_string;
 use anyhow::{Context, Result};
-use catplus_common::graph::{graph_builder::GraphBuilder, insert_into::InsertIntoGraph};
+use catplus_common::graph::{
+    graph_builder::GraphBuilder, insert_into::InsertIntoGraph, namespaces::cat_resource,
+};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::path::{Path, PathBuf};
 
@@ -70,7 +72,7 @@ where
 
     if config.materialize {
         graph_builder
-            .materialize_blank_nodes(Some("http://example.org/cat/resource/"))
+            .materialize_blank_nodes(Some(&cat_resource::ns.clone().to_string()))
             .context("Failed to materialize blank nodes")?;
     }
 
