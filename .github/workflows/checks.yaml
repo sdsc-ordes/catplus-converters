@@ -1,10 +1,9 @@
-name: normal
+name: checks
 on:
   pull_request:
   push:
-    branches: main
 jobs:
-  normal-checks:
+  default:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
