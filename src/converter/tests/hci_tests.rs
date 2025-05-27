@@ -125,6 +125,5 @@ fn test_convert_campaign() {
     let result_ttl = result.as_ref().unwrap().as_str();
     let result_graph = parse_turtle_to_graph(&result_ttl).unwrap();
     let graphs_match = isomorphic_graphs(&result_graph, &expected_graph);
-    println!("Result Graph: {}", result_ttl);
     assert_eq!(graphs_match.unwrap(), true);
 }

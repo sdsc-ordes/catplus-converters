@@ -170,21 +170,15 @@ pub struct DeviceSystemDocument {
     #[serde(alias = "device document", alias = "device control document")]
     pub device_document: Vec<DeviceDocument>,
     #[serde(rename = "asset management identifier")]
-    pub asset_management_identifier: String,
+    pub asset_management_identifier: Option<String>,
 }
 
 impl InsertIntoGraph for DeviceSystemDocument {
-    fn get_uri(&self) -> SimpleTerm<'static> {
-        // build URI based on self.asset_management_identifier
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.asset_management_identifier));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
-    }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::DeviceSystemDocument.as_simple() as &dyn InsertIntoGraph),
             (allores::AFR_0002722, &self.device_document),
-            (allores::AFR_0001976, &self.asset_management_identifier.as_simple()),
+            (allores::AFR_0001976, &self.asset_management_identifier.as_ref().clone().map(|s| s.as_simple())),
         ] {
             value.attach_into(
                 graph,
