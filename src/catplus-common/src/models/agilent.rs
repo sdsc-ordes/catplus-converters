@@ -178,7 +178,10 @@ impl InsertIntoGraph for DeviceSystemDocument {
         for (pred, value) in [
             (rdf::type_, &cat::DeviceSystemDocument.as_simple() as &dyn InsertIntoGraph),
             (allores::AFR_0002722, &self.device_document),
-            (allores::AFR_0001976, &self.asset_management_identifier.as_ref().clone().map(|s| s.as_simple())),
+            (
+                allores::AFR_0001976,
+                &self.asset_management_identifier.as_ref().clone().map(|s| s.as_simple()),
+            ),
         ] {
             value.attach_into(
                 graph,
