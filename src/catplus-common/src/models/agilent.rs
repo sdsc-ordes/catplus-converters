@@ -2,17 +2,17 @@ use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
         namespaces::{allodc, allores, allorole, cat, cat_resource, obo, qb, qudt},
+        utils::hash_identifier,
     },
     models::{core::PeakList, enums::Unit},
-    graph::utils::hash_identifier,
 };
 
 use serde::{Deserialize, Serialize};
 use sophia::{
     api::ns::{rdf, rdfs, xsd},
     inmem::graph::LightGraph,
+    iri::IriRef,
 };
-use sophia::iri::IriRef;
 use sophia_api::term::{SimpleTerm, Term};
 
 #[derive(Deserialize)]
@@ -184,10 +184,7 @@ impl InsertIntoGraph for DeviceSystemDocument {
         for (pred, value) in [
             (rdf::type_, &cat::DeviceSystemDocument.as_simple() as &dyn InsertIntoGraph),
             (allores::AFR_0002722, &self.device_document),
-            (
-                allores::AFR_0001976,
-                &self.asset_management_identifier.as_simple(),
-            ),
+            (allores::AFR_0001976, &self.asset_management_identifier.as_simple()),
         ] {
             value.attach_into(
                 graph,
@@ -225,7 +222,7 @@ impl InsertIntoGraph for DeviceDocument {
         uri.push_str(&hash_identifier(&self.device_identifier));
         IriRef::new_unchecked(uri).try_into_term().unwrap()
     }
-    
+
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &allores::AFR_0002567.as_simple() as &dyn InsertIntoGraph),
