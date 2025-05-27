@@ -1,7 +1,7 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, cat_resource, purl, obo, qb, qudt},
+        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, purl, qb, qudt},
         utils::hash_identifier,
     },
     models::{core::PeakList, enums::Unit},
