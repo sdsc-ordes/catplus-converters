@@ -140,7 +140,6 @@ fn test_convert_liquid_chromatography() {
               allores:AFR_0002659 [ a cat:ProcessedDataDocument;
                   allores:AFR_0000432 [ a cat:PeakList]]]];
       schema:contentUrl "http://example.org/test/../../data/tests/agilent_liquid_chromatography_aggregate_document.json".
-
       "#;
     let expected_graph = parse_turtle_to_graph(&expected_ttl).unwrap();
     let result_ttl = result.as_ref().unwrap().as_str();

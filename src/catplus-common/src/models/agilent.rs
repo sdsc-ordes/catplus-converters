@@ -1,7 +1,7 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, qb, qudt},
+        namespaces::{allodc, allores, allorole, cat, cat_resource, purl, obo, qb, qudt},
         utils::hash_identifier,
     },
     models::{core::PeakList, enums::Unit},
@@ -268,21 +268,45 @@ pub struct SampleDocument {
     #[serde(rename = "sample identifier")]
     pub sample_identifier: String,
     #[serde(rename = "written name")]
-    pub written_name: String,
+    pub product_identifier: String,
 }
 
 impl InsertIntoGraph for SampleDocument {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
+        let product = AgilentProduct { product_identifier: self.product_identifier.clone() };
         for (pred, value) in [
             (rdf::type_, &cat::SampleDocument.as_simple() as &dyn InsertIntoGraph),
+            (cat::hasProduct, &product),
             (allores::AFR_0001118, &self.sample_identifier.as_simple()),
-            (obo::IAO_0000590, &self.written_name.as_simple()),
         ] {
             value.attach_into(
                 graph,
                 Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
             )?;
         }
+        Ok(())
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AgilentProduct {
+    #[serde(rename = "sample identifier")]
+    pub product_identifier: String,
+}
+
+impl InsertIntoGraph for AgilentProduct {
+    fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
+        for (pred, value) in [
+            (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),
+            (purl::identifier, &self.product_identifier.as_simple()),
+        ] {
+            value.attach_into(
+                graph,
+                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
+            )?;
+        }
+
         Ok(())
     }
 }
