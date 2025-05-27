@@ -57,8 +57,9 @@ fn test_convert_liquid_chromatography() {
           allores:AFR_0002374 [ a allores:AFR_0002375;
               allores:AFR_0001121 "DAD1A";
               allores:AFR_0002083 [ a cat:SampleDocument;
-                  allores:AFR_0001118 "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9";
-                  obo:IAO_0000590 "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"];
+                  cat:hasProduct [ a cat:Product;
+                      purl:identifier "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"];
+                  allores:AFR_0001118 "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9"];
               allores:AFR_0002526 [ a cat:DeviceSystemDocument;
                   allores:AFR_0002722 <http://example.org/cat/resource/47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU>];
               allores:AFR_0002529 [ a cat:InjectionDocument;
@@ -114,8 +115,9 @@ fn test_convert_liquid_chromatography() {
             [ a allores:AFR_0002375;
               allores:AFR_0001121 "DAD1B";
               allores:AFR_0002083 [ a cat:SampleDocument;
-                  allores:AFR_0001118 "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9";
-                  obo:IAO_0000590 "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"];
+                  cat:hasProduct [ a cat:Product;
+                      purl:identifier "1-4 PYRIDYL PIPERAZINE-2024-04-12 10-23-04+02-00-20.dx"];
+                  allores:AFR_0001118 "0659d110-49d0-4e98-8f3a-1aaf9c4ec0d9"];
               allores:AFR_0002526 [ a cat:DeviceSystemDocument;
                   allores:AFR_0002722 <http://example.org/cat/resource/47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU>];
               allores:AFR_0002529 [ a cat:InjectionDocument;
