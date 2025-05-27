@@ -40,6 +40,7 @@ namespace! {
     hasCartridge,
     hasChemical,
     hasContainerPositionAndQuantity,
+    hasProduct,
     hasLiquidChromatography,
     hasObjective,
     hasPlate,
