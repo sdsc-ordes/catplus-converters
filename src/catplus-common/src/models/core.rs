@@ -115,7 +115,7 @@ pub struct Chemical {
 
 impl InsertIntoGraph for Chemical {
     fn get_uri(&self) -> SimpleTerm<'static> {
-        // build URI based on self.batch_id
+        // build URI based on self.inchi
         let mut uri = cat_resource::ns.clone().as_str().to_owned();
         uri.push_str(&hash_identifier(&self.inchi));
         IriRef::new_unchecked(uri).try_into_term().unwrap()

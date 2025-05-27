@@ -1,9 +1,10 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, obo, qb, qudt},
+        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, qb, qudt},
     },
     models::{core::PeakList, enums::Unit},
+    graph::utils::hash_identifier,
 };
 
 use serde::{Deserialize, Serialize};
@@ -11,6 +12,7 @@ use sophia::{
     api::ns::{rdf, rdfs, xsd},
     inmem::graph::LightGraph,
 };
+use sophia::iri::IriRef;
 use sophia_api::term::{SimpleTerm, Term};
 
 #[derive(Deserialize)]
@@ -168,17 +170,23 @@ pub struct DeviceSystemDocument {
     #[serde(alias = "device document", alias = "device control document")]
     pub device_document: Vec<DeviceDocument>,
     #[serde(rename = "asset management identifier")]
-    pub asset_management_identifier: Option<String>,
+    pub asset_management_identifier: String,
 }
 
 impl InsertIntoGraph for DeviceSystemDocument {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        // build URI based on self.asset_management_identifier
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&hash_identifier(&self.asset_management_identifier));
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::DeviceSystemDocument.as_simple() as &dyn InsertIntoGraph),
             (allores::AFR_0002722, &self.device_document),
             (
                 allores::AFR_0001976,
-                &self.asset_management_identifier.as_ref().clone().map(|s| s.as_simple()),
+                &self.asset_management_identifier.as_simple(),
             ),
         ] {
             value.attach_into(
@@ -211,6 +219,13 @@ pub struct DeviceDocument {
 }
 
 impl InsertIntoGraph for DeviceDocument {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        // build URI based on self.device_identifier
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&hash_identifier(&self.device_identifier));
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
+    
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &allores::AFR_0002567.as_simple() as &dyn InsertIntoGraph),
