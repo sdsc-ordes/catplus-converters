@@ -26,14 +26,14 @@ jobs:
 
       - name: Build image
         run: |
-          just dev just image build
+          just nix::develop just image build
 
       - name: Push image
         if: ${{ github.event_name == 'release' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          just dev bash -c '
+          just nix::develop bash -c '
             echo "$GITHUB_TOKEN" | skopeo login ghcr.io -u $GITHUB_ACTOR --password-stdin
             just image push
           '
