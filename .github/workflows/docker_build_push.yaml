@@ -1,10 +1,9 @@
 name: Build and Push Docker Image
 
 on:
+  release:
+    types: [published]
   push:
-    branches:
-      - main
-      - feat/add-nix-package
   workflow_dispatch:
 
 jobs:
@@ -15,6 +14,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Set up just
+        uses: extractions/setup-just@v3
+
       - name: Set up Nix
         uses: cachix/install-nix-action@v25
         with:
@@ -22,11 +24,16 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Run Nix development shell and build/push image
+      - name: Build image
+        run: |
+          just nix::develop just image build
+
+      - name: Push image
+        if: ${{ github.event_name == 'release' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          nix develop ./tools/nix#default --accept-flake-config --command bash -c '
+          just nix::develop bash -c '
             echo "$GITHUB_TOKEN" | skopeo login ghcr.io -u $GITHUB_ACTOR --password-stdin
             just image push
           '
