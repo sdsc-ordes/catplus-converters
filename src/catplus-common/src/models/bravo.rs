@@ -65,8 +65,12 @@ pub struct BravoAction {
 
 impl InsertIntoGraph for BravoAction {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
+        let mut action_name: ActionName = self.action_name.clone();
+        if self.action_name == ActionName::AddAction {
+            action_name = ActionName::BravoAddAction;
+        }
         for (pred, value) in [
-            (rdf::type_, &self.action_name.iri().as_simple() as &dyn InsertIntoGraph),
+            (rdf::type_, &action_name.iri().as_simple() as &dyn InsertIntoGraph),
             (allores::AFX_0000622, &(self.start_time.as_str() * xsd::dateTime).as_simple()),
             (allores::AFR_0002423, &(self.ending_time.as_str() * xsd::dateTime).as_simple()),
             (allores::AFR_0001606, &self.method_name.as_ref().clone().map(|s| s.as_simple())),
