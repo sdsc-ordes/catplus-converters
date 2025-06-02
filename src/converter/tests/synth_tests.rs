@@ -215,7 +215,7 @@ fn test_convert_add_action() {
               qudt:unit unit:GM-PER-MilliL;
               qudt:value "1.119"^^xsd:double].
 
-        [] a cat:AddAction;
+        [] a cat:SynthAddAction;
           cat:dispenseType "volume";
           cat:hasBatch <http://example.org/cat/resource/U1-jDX4l3YpJ8VNneXNOyChhCNEV2lBF1387QYXY95A>;
           cat:hasSample [ a cat:Sample;
@@ -262,7 +262,7 @@ fn test_convert_add_action() {
               qudt:unit unit:MilliGM;
               qudt:value "0.024"^^xsd:double].
 
-        [] a cat:AddAction;
+        [] a cat:SynthAddAction;
           cat:dispenseType "volume";
           cat:hasBatch <http://example.org/cat/resource/U1-jDX4l3YpJ8VNneXNOyChhCNEV2lBF1387QYXY95A>;
           cat:hasSample [ a cat:Sample;
