@@ -109,6 +109,8 @@ impl fmt::Display for Unit {
 #[allow(non_snake_case, non_camel_case_types)]
 pub enum ActionName {
     AddAction,
+    SynthAddAction,
+    BravoAddAction,
     setTemperatureAction,
     filtrateAction,
     shakeAction,
@@ -128,6 +130,8 @@ impl ActionName {
     pub fn iri(&self) -> NsTerm {
         match self {
             Self::AddAction => cat::AddAction,
+            Self::SynthAddAction => cat::SynthAddAction,
+            Self::BravoAddAction => cat::BravoAddAction,
             Self::setTemperatureAction => cat::SetTemperatureAction,
             Self::setPressureAction => cat::SetPressureAction,
             Self::shakeAction => cat::ShakeAction,

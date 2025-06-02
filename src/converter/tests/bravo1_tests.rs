@@ -45,7 +45,7 @@ fn test_convert_bravo1_add_action() {
               qudt:unit unit:GM-PER-MilliL;
               qudt:value "1"^^xsd:double].
 
-        [] a cat:AddAction;
+        [] a cat:BravoAddAction;
           cat:dispenseType "volume";
           cat:hasSolvent [ a cat:Solvent;
               cat:hasChemical <http://example.org/cat/resource/REbPn8oEMuCNjy8IqbupevT1Q_MUxGpALI21Ckz1fv8>;

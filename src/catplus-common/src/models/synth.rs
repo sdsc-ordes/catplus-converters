@@ -53,6 +53,7 @@ impl InsertIntoGraph for SynthBatch {
         // Loop through the actions and insert them into the Graph
         for action in &self.actions {
             if action.action_name == ActionName::AddAction {
+                let action_name = ActionName::SynthAddAction;
                 if let Some(wells_vector) = &action.has_well {
                     if !wells_vector.is_empty() {
                         // for every well a new Action is inserted in order to separate the Add Actions
@@ -67,7 +68,7 @@ impl InsertIntoGraph for SynthBatch {
                             for (pred, value) in [
                                 (
                                     rdf::type_,
-                                    &action.action_name.iri().as_simple() as &dyn InsertIntoGraph,
+                                    &action_name.iri().as_simple() as &dyn InsertIntoGraph,
                                 ),
                                 (
                                     allores::AFX_0000622,
@@ -161,6 +162,7 @@ pub struct SynthAction {
 impl InsertIntoGraph for SynthAction {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
+            //TODO: if add AddAction: insert as AddSynthAction
             (rdf::type_, &self.action_name.iri().as_simple() as &dyn InsertIntoGraph),
             (allores::AFX_0000622, &(self.start_time.as_str() * xsd::dateTime).as_simple()),
             (allores::AFR_0002423, &(self.ending_time.as_str() * xsd::dateTime).as_simple()),
