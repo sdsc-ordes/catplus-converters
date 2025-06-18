@@ -154,7 +154,7 @@ impl InsertIntoGraph for PeakList {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::PeakList.as_simple() as &dyn InsertIntoGraph),
-            (cat::Peak, &self.peak),
+            (cat::peak, &self.peak),
         ] {
             value.attach_into(
                 graph,

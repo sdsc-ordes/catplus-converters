@@ -57,7 +57,7 @@ namespace! {
     Observation,
     optimizationType,
     order,
-    Peak,
+    peak,
     PeakList,
     Plate,
     ProcessedDataDocument,
