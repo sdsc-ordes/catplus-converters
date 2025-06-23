@@ -169,7 +169,7 @@ impl InsertIntoGraph for SynthAction {
             (allores::AFR_0001606, &self.method_name.as_simple()),
             (allores::AFR_0001723, &self.equipment_name.as_simple()),
             (cat::subEquipmentName, &self.sub_equipment_name.as_simple()),
-            (cat::speedInRPM, &self.speed_shaker),
+            (alloprop::AFX_0000211, &self.speed_shaker),
             (cat::temperatureTumbleStirrer, &self.temperature_tumble_stirrer),
             (alloprop::AFX_0000211, &self.speed_tumble_stirrer),
             (cat::vacuum, &self.vacuum),
