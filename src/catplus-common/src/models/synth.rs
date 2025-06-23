@@ -31,6 +31,14 @@ pub struct SynthBatch {
     pub actions: Vec<SynthAction>,
 }
 
+fn set_product_uri(product_id: String) -> SimpleTerm<'static> {
+    //same as in agilent.rs get_uri function for AgilentProduct
+    //same as in bravo.rs get_uri function for BravoProduct
+    let mut uri = cat_resource::ns.clone().as_str().to_owned();
+    uri.push_str(&hash_identifier(&product_id));
+    IriRef::new_unchecked(uri).try_into_term().unwrap()
+}
+
 impl InsertIntoGraph for SynthBatch {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
@@ -64,7 +72,8 @@ impl InsertIntoGraph for SynthBatch {
                             // Create the product_id from container_id and position
                             let product_id =
                                 format!("{}-{}", &well.has_plate.container_id, well.position);
-                            let new_product_uri = well.get_uri();
+                            //let new_product_uri = well.get_uri();
+                            let new_product_uri = set_product_uri(product_id.clone());
                             for (pred, value) in [
                                 (
                                     rdf::type_,

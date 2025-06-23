@@ -296,6 +296,14 @@ pub struct AgilentProduct {
 }
 
 impl InsertIntoGraph for AgilentProduct {
+
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        //same as in synth.rs set_product_uri function
+        //same as in bravo.rs get_uri function for BravoProduct
+        let mut uri = cat_resource::ns.clone().as_str().to_owned();
+        uri.push_str(&hash_identifier(&self.product_identifier));
+        IriRef::new_unchecked(uri).try_into_term().unwrap()
+    }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),
