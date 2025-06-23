@@ -296,7 +296,6 @@ pub struct AgilentProduct {
 }
 
 impl InsertIntoGraph for AgilentProduct {
-
     fn get_uri(&self) -> SimpleTerm<'static> {
         //same as in synth.rs set_product_uri function
         //same as in bravo.rs get_uri function for BravoProduct
