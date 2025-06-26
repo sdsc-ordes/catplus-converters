@@ -100,9 +100,6 @@ impl InsertIntoGraph for MeasurementAggregateDocument {
 pub struct MeasurementDocument {
     #[serde(rename = "measurement identifier")]
     pub measurement_identifier: String,
-    // TO-DO: needs further definition to be integrated
-    // #[serde(rename = "chromatography column document")]
-    // pub chromatography_column_document: ChromatographyColumnDocument,
     #[serde(rename = "device control aggregate document")]
     pub device_control_aggregate_document: DeviceSystemDocument,
     #[serde(rename = "sample document")]
@@ -139,23 +136,6 @@ impl InsertIntoGraph for MeasurementDocument {
             (allores::AFR_0002878, &self.three_three_dimensional_mass_spectrum_data_cube),
             (allores::AFR_0002659, &self.processed_data_document),
         ] {
-            value.attach_into(
-                graph,
-                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
-            )?;
-        }
-        Ok(())
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ChromatographyColumnDocument {}
-
-impl InsertIntoGraph for ChromatographyColumnDocument {
-    fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
-        for (pred, value) in
-            [(rdf::type_, &cat::ChromatographyColumnDocument.as_simple() as &dyn InsertIntoGraph)]
-        {
             value.attach_into(
                 graph,
                 Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
