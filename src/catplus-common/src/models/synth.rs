@@ -1,8 +1,8 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{alloproc, alloprop, alloqual, allores, cat, cat_resource, purl, qudt},
-        utils::hash_identifier,
+        namespaces::{alloproc, alloprop, alloqual, allores, cat, purl, qudt},
+        utils::generate_resource_identifier_uri,
     },
     models::{
         core::{Chemical, Observation, Plate},
@@ -34,18 +34,14 @@ pub struct SynthBatch {
 fn set_product_uri(product_id: String) -> SimpleTerm<'static> {
     //same as in agilent.rs get_uri function for AgilentProduct
     //same as in bravo.rs get_uri function for BravoProduct
-    let mut uri = cat_resource::ns.clone().as_str().to_owned();
-    uri.push_str(&hash_identifier(&product_id));
-    IriRef::new_unchecked(uri).try_into_term().unwrap()
+    generate_resource_identifier_uri(product_id.clone())
 }
 
 impl InsertIntoGraph for SynthBatch {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.batch_id));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
-    }
+        generate_resource_identifier_uri(self.batch_id.clone())
+}
 
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [

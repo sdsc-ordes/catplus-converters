@@ -1,8 +1,8 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{alloprop, alloqual, allores, cat, cat_resource, purl},
-        utils::hash_identifier,
+        namespaces::{alloprop, alloqual, allores, cat, purl},
+        utils::generate_resource_identifier_uri,
     },
     models::{
         core::{Chemical, Observation, Plate, Well},
@@ -204,9 +204,7 @@ impl InsertIntoGraph for BravoProduct {
     fn get_uri(&self) -> SimpleTerm<'static> {
         //same as in synth.rs set_product_uri function
         //same as in agilent.rs get_uri function for AgilentProduct
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.sample_id));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
+        generate_resource_identifier_uri(self.sample_id.clone())
     }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [

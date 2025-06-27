@@ -1,10 +1,10 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, purl, qb, qudt},
-        utils::hash_identifier,
+        namespaces::{allodc, allores, allorole, cat, obo, purl, qb, qudt},
+        utils::generate_resource_identifier_uri,
     },
-    models::{core::PeakList, enums::Unit},
+    models::{core::PeakList, enums::Unit}
 };
 
 use serde::{Deserialize, Serialize};
@@ -195,9 +195,7 @@ pub struct DeviceDocument {
 impl InsertIntoGraph for DeviceDocument {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.device_identifier
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.device_identifier));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
+        generate_resource_identifier_uri(self.device_identifier.clone())
     }
 
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
@@ -279,9 +277,7 @@ impl InsertIntoGraph for AgilentProduct {
     fn get_uri(&self) -> SimpleTerm<'static> {
         //same as in synth.rs set_product_uri function
         //same as in bravo.rs get_uri function for BravoProduct
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.product_identifier));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
+        generate_resource_identifier_uri(self.product_identifier.clone())
     }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
