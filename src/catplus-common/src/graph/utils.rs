@@ -1,3 +1,4 @@
+use crate::graph::namespaces::cat_resource;
 use base64::{engine::general_purpose, Engine as _};
 use sha2::{Digest, Sha256};
 use sophia_api::{
@@ -5,7 +6,6 @@ use sophia_api::{
     term::{bnode_id::BnodeId, SimpleTerm},
 };
 use uuid::Uuid;
-use crate::graph::namespaces::cat_resource;
 
 pub fn generate_bnode_term() -> SimpleTerm<'static> {
     let identifier = Uuid::new_v4().to_string();

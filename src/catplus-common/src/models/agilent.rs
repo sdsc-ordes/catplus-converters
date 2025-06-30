@@ -4,7 +4,7 @@ use crate::{
         namespaces::{allodc, allores, allorole, cat, obo, purl, qb, qudt},
         utils::generate_resource_identifier_uri,
     },
-    models::{core::PeakList, enums::Unit}
+    models::{core::PeakList, enums::Unit},
 };
 
 use serde::{Deserialize, Serialize};

@@ -41,7 +41,7 @@ impl InsertIntoGraph for SynthBatch {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
         generate_resource_identifier_uri(self.batch_id.clone())
-}
+    }
 
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
