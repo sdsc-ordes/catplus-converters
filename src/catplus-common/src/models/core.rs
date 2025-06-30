@@ -154,12 +154,26 @@ impl InsertIntoGraph for PeakList {
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::PeakList.as_simple() as &dyn InsertIntoGraph),
-            (cat::Peak, &self.peak),
+            (cat::peak, &self.peak),
         ] {
             value.attach_into(
                 graph,
                 Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
             )?;
+        }
+        let product = cat::Product.as_simple();
+        let rdf_type = rdf::type_.as_simple();
+
+        let product_object = graph.triples().filter_map(Result::ok).find_map(|[s, p, o]| {
+            if *p == rdf_type && *o == product {
+                Some(s.clone())
+            } else {
+                None
+            }
+        });
+
+        if let Some(subject) = product_object {
+            graph.insert(iri.clone(), cat::hasProduct.as_simple(), subject)?;
         }
         Ok(())
     }

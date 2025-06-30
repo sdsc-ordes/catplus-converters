@@ -2,6 +2,7 @@ use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
         namespaces::{alloprop, alloqual, allores, cat, purl},
+        utils::generate_resource_identifier_uri,
     },
     models::{
         core::{Chemical, Observation, Plate, Well},
@@ -13,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use sophia::{
     api::ns::{rdf, xsd},
     inmem::graph::LightGraph,
+    iri::IriRef,
 };
 use sophia_api::term::{SimpleTerm, Term};
 
@@ -60,7 +62,7 @@ pub struct BravoAction {
     pub start_duration: Option<Observation>,
     pub ending_duration: Option<Observation>,
     pub order: Option<String>,
-    pub product_identification: ProductIdentification,
+    pub product_identification: BravoProduct,
 }
 
 impl InsertIntoGraph for BravoAction {
@@ -191,14 +193,19 @@ impl InsertIntoGraph for BravoWell {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ProductIdentification {
+pub struct BravoProduct {
     #[serde(rename = "sampleID")]
     pub sample_id: String,
     // Peak identifier is added on the action, not on the product
     pub peak_identifier: String,
 }
 
-impl InsertIntoGraph for ProductIdentification {
+impl InsertIntoGraph for BravoProduct {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        //same as in synth.rs set_product_uri function
+        //same as in agilent.rs get_uri function for AgilentProduct
+        generate_resource_identifier_uri(self.sample_id.clone())
+    }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),

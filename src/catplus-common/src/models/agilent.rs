@@ -1,8 +1,8 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{allodc, allores, allorole, cat, cat_resource, obo, purl, qb, qudt},
-        utils::hash_identifier,
+        namespaces::{allodc, allores, allorole, cat, obo, purl, qb, qudt},
+        utils::generate_resource_identifier_uri,
     },
     models::{core::PeakList, enums::Unit},
 };
@@ -100,9 +100,6 @@ impl InsertIntoGraph for MeasurementAggregateDocument {
 pub struct MeasurementDocument {
     #[serde(rename = "measurement identifier")]
     pub measurement_identifier: String,
-    // TO-DO: needs further definition to be integrated
-    // #[serde(rename = "chromatography column document")]
-    // pub chromatography_column_document: ChromatographyColumnDocument,
     #[serde(rename = "device control aggregate document")]
     pub device_control_aggregate_document: DeviceSystemDocument,
     #[serde(rename = "sample document")]
@@ -139,23 +136,6 @@ impl InsertIntoGraph for MeasurementDocument {
             (allores::AFR_0002878, &self.three_three_dimensional_mass_spectrum_data_cube),
             (allores::AFR_0002659, &self.processed_data_document),
         ] {
-            value.attach_into(
-                graph,
-                Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
-            )?;
-        }
-        Ok(())
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ChromatographyColumnDocument {}
-
-impl InsertIntoGraph for ChromatographyColumnDocument {
-    fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
-        for (pred, value) in
-            [(rdf::type_, &cat::ChromatographyColumnDocument.as_simple() as &dyn InsertIntoGraph)]
-        {
             value.attach_into(
                 graph,
                 Link { source_iri: iri.clone(), pred: pred.as_simple(), target_iri: None },
@@ -215,9 +195,7 @@ pub struct DeviceDocument {
 impl InsertIntoGraph for DeviceDocument {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.device_identifier
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.device_identifier));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
+        generate_resource_identifier_uri(self.device_identifier.clone())
     }
 
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
@@ -296,6 +274,11 @@ pub struct AgilentProduct {
 }
 
 impl InsertIntoGraph for AgilentProduct {
+    fn get_uri(&self) -> SimpleTerm<'static> {
+        //same as in synth.rs set_product_uri function
+        //same as in bravo.rs get_uri function for BravoProduct
+        generate_resource_identifier_uri(self.product_identifier.clone())
+    }
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
         for (pred, value) in [
             (rdf::type_, &cat::Product.as_simple() as &dyn InsertIntoGraph),

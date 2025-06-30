@@ -1,8 +1,8 @@
 use crate::{
     graph::{
         insert_into::{InsertIntoGraph, Link},
-        namespaces::{alloproc, alloprop, alloqual, allores, cat, cat_resource, purl, qudt},
-        utils::hash_identifier,
+        namespaces::{alloproc, alloprop, alloqual, allores, cat, purl, qudt},
+        utils::generate_resource_identifier_uri,
     },
     models::{
         core::{Chemical, Observation, Plate},
@@ -31,12 +31,16 @@ pub struct SynthBatch {
     pub actions: Vec<SynthAction>,
 }
 
+fn set_product_uri(product_id: String) -> SimpleTerm<'static> {
+    //same as in agilent.rs get_uri function for AgilentProduct
+    //same as in bravo.rs get_uri function for BravoProduct
+    generate_resource_identifier_uri(product_id.clone())
+}
+
 impl InsertIntoGraph for SynthBatch {
     fn get_uri(&self) -> SimpleTerm<'static> {
         // build URI based on self.batch_id
-        let mut uri = cat_resource::ns.clone().as_str().to_owned();
-        uri.push_str(&hash_identifier(&self.batch_id));
-        IriRef::new_unchecked(uri).try_into_term().unwrap()
+        generate_resource_identifier_uri(self.batch_id.clone())
     }
 
     fn insert_into(&self, graph: &mut LightGraph, iri: SimpleTerm) -> anyhow::Result<()> {
@@ -64,7 +68,8 @@ impl InsertIntoGraph for SynthBatch {
                             // Create the product_id from container_id and position
                             let product_id =
                                 format!("{}-{}", &well.has_plate.container_id, well.position);
-                            let new_product_uri = well.get_uri();
+                            //let new_product_uri = well.get_uri();
+                            let new_product_uri = set_product_uri(product_id.clone());
                             for (pred, value) in [
                                 (
                                     rdf::type_,
@@ -169,7 +174,7 @@ impl InsertIntoGraph for SynthAction {
             (allores::AFR_0001606, &self.method_name.as_simple()),
             (allores::AFR_0001723, &self.equipment_name.as_simple()),
             (cat::subEquipmentName, &self.sub_equipment_name.as_simple()),
-            (cat::speedInRPM, &self.speed_shaker),
+            (alloprop::AFX_0000211, &self.speed_shaker),
             (cat::temperatureTumbleStirrer, &self.temperature_tumble_stirrer),
             (alloprop::AFX_0000211, &self.speed_tumble_stirrer),
             (cat::vacuum, &self.vacuum),
