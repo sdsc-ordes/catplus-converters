@@ -65,7 +65,11 @@ pub fn determine_input_action(input_path: &Path) -> Result<InputAction> {
         .to_str()
         .ok_or_else(|| anyhow::anyhow!("Filename is not valid UTF-8"))?;
     if filename.ends_with(".ttl") || filename.ends_with(".jsonld") {
-        return Ok(InputAction::Skip("Unknown extension.".to_string()));
+        return Ok(InputAction::Skip("Already in RDF.".to_string()));
+    } else if !filename.ends_with(".json") {
+        return Ok(InputAction::Skip(
+            "Unknown extension: the converter only handles JSON.".to_string(),
+        ));
     }
 
     let action = match detect_input_type(filename) {
