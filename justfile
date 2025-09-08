@@ -3,8 +3,7 @@ set positional-arguments
 set shell := ["bash", "-cue"]
 
 root_dir := `git rev-parse --show-toplevel`
-shapes_url := "https://github.com/sdsc-ordes/catplus-ontology/releases/latest/download/catplus_ontology.ttl"
-
+shapes_url := "https://github.com/sdsc-ordes/catplus-ontology/releases/download/v2.1.0/catplus_ontology.ttl"
 # Default recipe to list all recipes.
 default:
     just --list --no-aliases
@@ -48,7 +47,8 @@ validate +args:
 [group('validation')]
 shacl-start:
   docker run \
-    -d -it --rm \
+    -d \
+    --rm \
     --name catplus-shacl-api \
     -p 8001:8000 \
     -e SHAPES_URL={{shapes_url}} \
