@@ -1,5 +1,10 @@
 # Cat+ Zarr Converters
 
+> [!IMPORTANT]  
+> This repository is **archived** and no longer maintained.  
+> The project has been migrated to our collaborators at [SwissCAT+](https://github.com/swisscatplus).  
+> 👉 Development continues at [swisscatplus/catplus-converters](https://github.com/swisscatplus/catplus-converters)  
+
 ## About
 
 This repository contains all the converters for the different data types in the Cat+ project (Agilent, UV, IR, etc.)
